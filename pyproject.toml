@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "aizen"
+name = "aizen-agents"
 version = "0.1.0"
 description = "Web3 AI Agent Platform with powerful tools and realtime data"
 requires-python = ">=3.9"
