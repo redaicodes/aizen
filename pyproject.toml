@@ -21,6 +21,21 @@ dependencies = [
     "solders>=0.18.0",
     "construct>=2.10.68",
 ]
+authors = [
+    {name = "redaicodes", email = "redaicodes@proton.me"}
+]
+readme = "README.md"
+license = {file = "LICENSE"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",  # or your chosen license
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/redaicodes/aizen"
+Repository = "https://github.com/redaicodes/aizen.git"
+#Documentation = "https://yourusername.github.io/aizen"  # if you have documentation
 
 [project.optional-dependencies]
 dev = [
@@ -45,3 +60,6 @@ target-version = ["py39"]
 [tool.isort]
 profile = "black"
 multi_line_output = 3
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/aizen"]
