@@ -16,7 +16,10 @@ dependencies = [
     "playwright>=1.39.0",
     "lxml>=4.9.0",
     "eth-account>=0.8.0",
-    "beautifulsoup4>=4.12.0"
+    "solana>=0.30.0",
+    "base58>=2.1.1",
+    "solders>=0.18.0",
+    "construct>=2.10.68",
 ]
 
 [project.optional-dependencies]
