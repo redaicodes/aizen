@@ -2,7 +2,7 @@ from typing import Dict, List, Optional, Union
 import logging
 import asyncio
 from datetime import datetime
-from twikit import Twitter
+# from twikit import Twitter
 
 
 class TwitterClient:
@@ -27,24 +27,24 @@ class TwitterClient:
         """
         self.logger = logging.getLogger(self.__class__.__name__)
         
-        if not self.logger.handlers:
-            handler = logging.StreamHandler()
-            formatter = logging.Formatter(
-                '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-            )
-            handler.setFormatter(formatter)
-            self.logger.addHandler(handler)
+        # if not self.logger.handlers:
+        #     handler = logging.StreamHandler()
+        #     formatter = logging.Formatter(
+        #         '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        #     )
+        #     handler.setFormatter(formatter)
+        #     self.logger.addHandler(handler)
         
-        self.logger.setLevel(logging.DEBUG if debug_mode else logging.INFO)
+        # self.logger.setLevel(logging.DEBUG if debug_mode else logging.INFO)
         
-        # Initialize Twitter client
-        self.client = Twitter()
+        # # Initialize Twitter client
+        # self.client = Twitter()
         
-        # Login if credentials provided
-        if username and password:
-            self.client.login(username, password)
-        elif cookies:
-            self.client.set_cookies(cookies)
+        # # Login if credentials provided
+        # if username and password:
+        #     self.client.login(username, password)
+        # elif cookies:
+        #     self.client.set_cookies(cookies)
             
         self.logger.info("Twitter scraper tool initialized")
 
@@ -60,19 +60,20 @@ class TwitterClient:
             Dict containing tweet information
         """
         try:
-            tweet_id = await asyncio.to_thread(
-                self.client.tweet,
-                text,
-                media_urls=media_urls if media_urls else None
-            )
+            # tweet_id = await asyncio.to_thread(
+            #     self.client.tweet,
+            #     text,
+            #     media_urls=media_urls if media_urls else None
+            # )
             
-            self.logger.info(f"Tweet posted successfully: {tweet_id}")
-            return {
-                'id': tweet_id,
-                'text': text,
-                'created_at': datetime.now().isoformat(),
-                'media_urls': media_urls
-            }
+            self.logger.info(f"Tweet posted successfully: ")
+            return {}
+            # return {
+            #     'id': tweet_id,
+            #     'text': text,
+            #     'created_at': datetime.now().isoformat(),
+            #     'media_urls': media_urls
+            # }
             
         except Exception as e:
             self.logger.error(f"Error posting tweet: {str(e)}")

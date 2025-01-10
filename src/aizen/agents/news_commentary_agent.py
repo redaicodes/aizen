@@ -54,7 +54,7 @@ class NewsCommentaryAgent(BaseAgent):
                         "Content-Type": "application/json"
                     },
                     json={
-                        "model": "gpt-4-turbo-preview",
+                        "model": "gpt-4o-mini",
                         "messages": messages,
                         "temperature": 0.7
                     }
