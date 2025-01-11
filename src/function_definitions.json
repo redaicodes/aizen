@@ -1,13 +1,14 @@
 [
     {
         "name": "blockworks__parse_latest_news",
-        "description": "Parse HTML content to extract news article information.\n\nArgs:\n    content (str): HTML content of the news page\n\nReturns:\n    list: List of dictionaries containing article information with keys:\n        - headline: Article headline text\n        - description: Article description or summary\n        - metadata: Article timestamp in datetime format\n        - url: Full URL to the article\n        - thumbnail: URL of the article's thumbnail image (currently not implemented)",
+        "description": "Parse HTML content to extract news article information.\n\nReturns: list: List of dictionaries containing article information with keys:\n        - headline: Article headline text\n        - description: Article description or summary\n        - metadata: Article timestamp in datetime format\n        - url: Full URL to the article\n        - thumbnail: URL of the article's thumbnail image (currently not implemented)",
         "strict": false,
         "parameters": {
             "type": "object",
             "properties": {
                 "content": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "HTML content of the news page"
                 }
             },
             "required": [
@@ -19,13 +20,14 @@
     },
     {
         "name": "blockworks__get_latest_news",
-        "description": "Fetch the latest news articles from Blockworks.\n\nArgs:\n    topk (int): Maximum number of articles to return. Defaults to 20\n\nReturns:\n    list: List of dictionaries containing article information, limited to topk items",
+        "description": "Fetch the latest news articles from Blockworks.\n\nReturns: list: List of dictionaries containing article information, limited to topk items",
         "strict": false,
         "parameters": {
             "type": "object",
             "properties": {
                 "topk": {
-                    "type": "number"
+                    "type": "number",
+                    "description": "Maximum number of articles to return. Defaults to 20"
                 }
             },
             "required": [],
@@ -35,13 +37,14 @@
     },
     {
         "name": "blockworks__get_page_content",
-        "description": "Fetch page content using Playwright browser automation with scroll support.\n\nThis method handles infinite scroll pagination by simulating mouse wheel\nevents to load more content. It includes delays between scrolls to allow\nfor content loading.\n\nArgs:\n    url (str): URL to fetch content from\n\nReturns:\n    str: HTML content of the page after scrolling\n\nRaises:\n    Exception: Any error that occurs during page fetching or scrolling",
+        "description": "Fetch page content using Playwright browser automation with scroll support.\n\nThis method handles infinite scroll pagination by simulating mouse wheel\nevents to load more content. It includes delays between scrolls to allow\nfor content loading.\n\nReturns: str: HTML content of the page after scrolling\n\nRaises:\n    Exception: Any error that occurs during page fetching or scrolling",
         "strict": false,
         "parameters": {
             "type": "object",
             "properties": {
                 "url": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "URL to fetch content from"
                 }
             },
             "required": [
@@ -53,13 +56,14 @@
     },
     {
         "name": "theblock__parse_latest_news",
-        "description": "Parse HTML content to extract news article information.\n\nArgs:\n    content (str): HTML content of the news page\n\nReturns:\n    list: List of dictionaries containing article information with keys:\n        - headline: Article headline text\n        - metadata: Article metadata (author, date, etc.)\n        - url: Full URL to the article\n        - thumbnail: URL of the article's thumbnail image",
+        "description": "Parse HTML content to extract news article information.\n\nReturns: list: List of dictionaries containing article information with keys:\n        - headline: Article headline text\n        - metadata: Article metadata (author, date, etc.)\n        - url: Full URL to the article\n        - thumbnail: URL of the article's thumbnail image",
         "strict": false,
         "parameters": {
             "type": "object",
             "properties": {
                 "content": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "HTML content of the news page"
                 }
             },
             "required": [
@@ -71,13 +75,14 @@
     },
     {
         "name": "theblock__get_latest_news",
-        "description": "Fetch the latest news articles from TheBlock.\n\nArgs:\n    topk (int): Number of articles to fetch. Defaults to 20\n\nReturns:\n    list: List of dictionaries containing article information",
+        "description": "Fetch the latest news articles from TheBlock.\n\nReturns: list: List of dictionaries containing article information",
         "strict": false,
         "parameters": {
             "type": "object",
             "properties": {
                 "topk": {
-                    "type": "number"
+                    "type": "number",
+                    "description": "Number of articles to fetch. Defaults to 20"
                 }
             },
             "required": [],
@@ -87,13 +92,14 @@
     },
     {
         "name": "theblock__get_page_content",
-        "description": "Fetch page content using Playwright browser automation.\n\nArgs:\n    url (str): URL to fetch content from\n\nReturns:\n    str: HTML content of the page\n\nRaises:\n    Exception: Any error that occurs during page fetching",
+        "description": "Fetch page content using Playwright browser automation.\n\nReturns: str: HTML content of the page\n\nRaises:\n    Exception: Any error that occurs during page fetching",
         "strict": false,
         "parameters": {
             "type": "object",
             "properties": {
                 "url": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "URL to fetch content from"
                 }
             },
             "required": [
@@ -105,7 +111,7 @@
     },
     {
         "name": "twitterclient__post_tweet",
-        "description": "Post a tweet, optionally with media.\n\nArgs:\n    text: Tweet text content\n    media_urls: Optional list of media URLs to attach\n    \nReturns:\n    Dict containing tweet information",
+        "description": "Post a tweet, optionally with media.\n\nReturns: Dict containing tweet information",
         "strict": false,
         "parameters": {
             "type": "object",
@@ -114,7 +120,7 @@
                     "type": "string"
                 },
                 "media_urls": {
-                    "type": "object"
+                    "type": "array"
                 }
             },
             "required": [
@@ -126,7 +132,7 @@
     },
     {
         "name": "twitterclient__search_tweets",
-        "description": "Search for tweets matching a query.\n\nArgs:\n    query: Search query string\n    limit: Maximum number of tweets to return\n    \nReturns:\n    List of matching tweet dictionaries",
+        "description": "Search for tweets matching a query.\n\nReturns: List of matching tweet dictionaries",
         "strict": false,
         "parameters": {
             "type": "object",
@@ -147,7 +153,7 @@
     },
     {
         "name": "twitterclient__get_user_tweets",
-        "description": "Get recent tweets from a user.\n\nArgs:\n    username: Twitter username to fetch tweets from\n    limit: Maximum number of tweets to fetch\n    \nReturns:\n    List of tweet dictionaries",
+        "description": "Get recent tweets from a user.\n\nReturns: List of tweet dictionaries",
         "strict": false,
         "parameters": {
             "type": "object",
@@ -168,7 +174,7 @@
     },
     {
         "name": "twitterclient__get_tweet_details",
-        "description": "Get detailed information about a specific tweet.\n\nArgs:\n    tweet_id: ID of tweet to fetch details for\n    \nReturns:\n    Dict containing tweet details",
+        "description": "Get detailed information about a specific tweet.\n\nReturns: Dict containing tweet details",
         "strict": false,
         "parameters": {
             "type": "object",
@@ -186,7 +192,7 @@
     },
     {
         "name": "twitterclient__monitor_user",
-        "description": "Monitor a user's tweets and optionally track metrics over time.\n\nArgs:\n    username: Username to monitor\n    callback: Optional callback function for new tweets\n    interval: Polling interval in seconds\n    track_metrics: Track follower/following counts if True",
+        "description": "Monitor a user's tweets and optionally track metrics over time.\n\nReturns: ",
         "strict": false,
         "parameters": {
             "type": "object",
@@ -195,7 +201,7 @@
                     "type": "string"
                 },
                 "callback": {
-                    "type": "object"
+                    "type": "array"
                 },
                 "interval": {
                     "type": "number"
@@ -213,7 +219,7 @@
     },
     {
         "name": "twitterclient__get_user_info",
-        "description": "Get detailed information about a Twitter user.\n\nArgs:\n    username: Username to get info for\n    \nReturns:\n    Dict containing user information",
+        "description": "Get detailed information about a Twitter user.\n\nReturns: Dict containing user information",
         "strict": false,
         "parameters": {
             "type": "object",

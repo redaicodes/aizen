@@ -3,7 +3,9 @@ import logging
 import asyncio
 from datetime import datetime
 # from twikit import Twitter
-
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 class TwitterClient:
     """
@@ -12,20 +14,18 @@ class TwitterClient:
     """
     
     def __init__(self,
-                 username: Optional[str] = None,
-                 password: Optional[str] = None,
                  cookies: Optional[Dict] = None,
                  debug_mode: bool = False):
         """
         Initialize Twitter scraper tool.
         
         Args:
-            username: Twitter username for authentication (optional)
-            password: Twitter password for authentication (optional)
             cookies: Twitter cookies for authentication (optional)
             debug_mode: Enable debug logging if True
         """
         self.logger = logging.getLogger(self.__class__.__name__)
+        username = os.getenv('TWITTER_USERNAME')
+        password = os.getenv('TWITTER_PASSWORD')
         
         # if not self.logger.handlers:
         #     handler = logging.StreamHandler()

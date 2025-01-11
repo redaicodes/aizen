@@ -4,6 +4,9 @@ import logging
 from solders import keypair, pubkey, transaction, system_program
 from solana.rpc.async_api import AsyncClient
 from .utils.wallet import WalletUtils
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 class SolanaClient:
     """Client for interacting with Solana network."""
@@ -11,8 +14,7 @@ class SolanaClient:
     DEFAULT_RPC_URL = "https://api.mainnet-beta.solana.com"
 
     def __init__(self, 
-                 rpc_url: str = DEFAULT_RPC_URL, 
-                 private_key: Optional[str] = None):
+                 rpc_url: str = DEFAULT_RPC_URL):
         self.client = AsyncClient(rpc_url)
         self.keypair = None
         
@@ -23,6 +25,7 @@ class SolanaClient:
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)
         
+        private_key = os.getenv('SOLANA_PRIVATE_KEY')
         if private_key:
             self.import_wallet(private_key)
             

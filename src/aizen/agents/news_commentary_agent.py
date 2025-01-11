@@ -5,23 +5,27 @@ from datetime import datetime
 from aizen.agents.base import BaseAgent, AgentConfig
 from aizen.data.news.blockworks import Blockworks
 from aizen.data.news.theblock import TheBlock
-
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 class NewsCommentaryAgent(BaseAgent):
     """
     Agent that fetches crypto news and generates market summaries with token recommendations.
     """
 
-    def __init__(self, config: AgentConfig, openai_api_key: str):
+    def __init__(self, config: AgentConfig):
         """
         Initialize NewsCommentaryAgent.
 
         Args:
             config: AgentConfig instance
-            openai_api_key: OpenAI API key for GPT access
         """
         super().__init__(config)
-        self.openai_api_key = openai_api_key
+        self.openai_api_key = os.getenv('OPENAI_API_KEY')
+        if not self.openai_api_key:
+            self.logger.error(f"Missing OPENAI_API_KEY in .env")
+            raise
 
         # Initialize news sources
         self.register_tool_class("theblock", TheBlock,
