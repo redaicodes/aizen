@@ -1,4 +1,0 @@
-{
-    "name": "news_poster",
-    "tools": ["blockworks__get_latest_news", "twitter_client__post_tweet"]
-}

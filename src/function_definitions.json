@@ -111,16 +111,14 @@
     },
     {
         "name": "twitterclient__post_tweet",
-        "description": "Post a tweet, optionally with media.\n\nReturns: Dict containing tweet information",
+        "description": "Post a new tweet.\n\nReturns: Dict: A dictionary containing tweet information with full engagement metrics,\n        text content, and metadata\n\nRaises:\n    Exception: If tweet posting fails",
         "strict": false,
         "parameters": {
             "type": "object",
             "properties": {
                 "text": {
-                    "type": "string"
-                },
-                "media_urls": {
-                    "type": "array"
+                    "type": "string",
+                    "description": "Content of the tweet to post"
                 }
             },
             "required": [
@@ -131,17 +129,71 @@
         "async": true
     },
     {
+        "name": "twitterclient__reply_to_tweet",
+        "description": "Reply to an existing tweet.\n\nReturns: Dict: A dictionary containing tweet information with full engagement metrics,\n        text content, and metadata\n\nRaises:\n    Exception: If reply posting fails",
+        "strict": false,
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "tweet_id": {
+                    "type": "string",
+                    "description": "ID of the tweet to reply to"
+                },
+                "text": {
+                    "type": "string",
+                    "description": "Content of the reply tweet"
+                }
+            },
+            "required": [
+                "tweet_id",
+                "text"
+            ],
+            "additionalProperties": false
+        },
+        "async": true
+    },
+    {
+        "name": "twitterclient__quote_tweet",
+        "description": "Quote an existing tweet with additional text.\n\nReturns: Dict: A dictionary containing tweet information with full engagement metrics,\n        text content, and metadata including the quoted tweet\n\nRaises:\n    Exception: If quote tweet posting fails",
+        "strict": false,
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "tweet_id": {
+                    "type": "string",
+                    "description": "ID of the tweet to quote"
+                },
+                "text": {
+                    "type": "string",
+                    "description": "Text to add to the quote tweet"
+                }
+            },
+            "required": [
+                "tweet_id",
+                "text"
+            ],
+            "additionalProperties": false
+        },
+        "async": true
+    },
+    {
         "name": "twitterclient__search_tweets",
-        "description": "Search for tweets matching a query.\n\nReturns: List of matching tweet dictionaries",
+        "description": "Search for tweets matching a query.\n\nReturns: List[Dict]: List of tweets with full metadata and engagement metrics\n\nRaises:\n    Exception: If search operation fails",
         "strict": false,
         "parameters": {
             "type": "object",
             "properties": {
                 "query": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Search query string"
+                },
+                "tweet_type": {
+                    "type": "string",
+                    "description": "Type of tweets to search ('Latest' or 'Top')"
                 },
                 "limit": {
-                    "type": "number"
+                    "type": "number",
+                    "description": "Maximum number of tweets to return"
                 }
             },
             "required": [
@@ -153,84 +205,39 @@
     },
     {
         "name": "twitterclient__get_user_tweets",
-        "description": "Get recent tweets from a user.\n\nReturns: List of tweet dictionaries",
+        "description": "Get recent tweets from a specific user.\n\nReturns: List[Dict]: List of tweets with full metadata and engagement metrics\n\nRaises:\n    Exception: If fetching tweets fails",
         "strict": false,
         "parameters": {
             "type": "object",
             "properties": {
-                "username": {
-                    "type": "string"
+                "user_id": {
+                    "type": "string",
+                    "description": "Twitter user ID"
+                },
+                "tweet_type": {
+                    "type": "string",
+                    "description": "Type of tweets to fetch ('Tweets', 'Replies', etc.)"
                 },
                 "limit": {
-                    "type": "number"
+                    "type": "number",
+                    "description": "Maximum number of tweets to return"
                 }
             },
             "required": [
-                "username"
+                "user_id"
             ],
             "additionalProperties": false
         },
         "async": true
     },
     {
-        "name": "twitterclient__get_tweet_details",
-        "description": "Get detailed information about a specific tweet.\n\nReturns: Dict containing tweet details",
+        "name": "twitterclient__get_trends",
+        "description": "Get current trending topics on Twitter.\n\nReturns: List[Dict]: List of trending topics with format:\n    {\n        'name': str,\n        'tweet_count': int\n    }\n\nRaises:\n    Exception: If fetching trends fails",
         "strict": false,
         "parameters": {
             "type": "object",
-            "properties": {
-                "tweet_id": {
-                    "type": "string"
-                }
-            },
-            "required": [
-                "tweet_id"
-            ],
-            "additionalProperties": false
-        },
-        "async": true
-    },
-    {
-        "name": "twitterclient__monitor_user",
-        "description": "Monitor a user's tweets and optionally track metrics over time.\n\nReturns: ",
-        "strict": false,
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "username": {
-                    "type": "string"
-                },
-                "callback": {
-                    "type": "array"
-                },
-                "interval": {
-                    "type": "number"
-                },
-                "track_metrics": {
-                    "type": "boolean"
-                }
-            },
-            "required": [
-                "username"
-            ],
-            "additionalProperties": false
-        },
-        "async": true
-    },
-    {
-        "name": "twitterclient__get_user_info",
-        "description": "Get detailed information about a Twitter user.\n\nReturns: Dict containing user information",
-        "strict": false,
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "username": {
-                    "type": "string"
-                }
-            },
-            "required": [
-                "username"
-            ],
+            "properties": {},
+            "required": [],
             "additionalProperties": false
         },
         "async": true
