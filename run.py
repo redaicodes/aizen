@@ -278,8 +278,12 @@ class AgentRunner:
         
         while gpt_calls < self.max_gpt_calls:
             try:
-                logger.info(f"Sending messages to GPT: {json.dumps(messages, indent=2)}")
-                
+                last_message = messages[-1] if messages else None
+                prev_messages_count = len(messages) - 1 if messages else 0
+
+                logger.info(f"Context: {prev_messages_count} previous messages")
+                logger.info(f"Sending last message to GPT: {json.dumps(last_message, indent=2)}")  
+
                 # Call GPT with tools
                 completion = self.client.chat.completions.create(
                     model="gpt-4o-mini",
@@ -369,6 +373,10 @@ class AgentRunner:
             except Exception as e:
                 logger.error(f"Error in execute_task: {str(e)}")
                 break
+        
+        # Log if we hit the max calls limit
+        if gpt_calls >= self.max_gpt_calls:
+            logger.warning(f"Task exceeded maximum GPT calls limit ({self.max_gpt_calls})")
     
         # Sleep if frequency is specified
         if 'frequency' in task:
