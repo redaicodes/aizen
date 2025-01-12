@@ -1,9 +1,3 @@
-import sys
-import asyncio
-
-if sys.platform.startswith("win"):
-    asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
-    
 import json
 import logging
 import argparse
@@ -17,7 +11,14 @@ from openai import OpenAI
 import inspect
 import time
 from concurrent.futures import ThreadPoolExecutor
+from dotenv import load_dotenv
 
+# Load environment variables from .env file
+load_dotenv()
+
+# Validate OpenAI API key
+if not os.getenv("OPENAI_API_KEY"):
+    raise ValueError("OPENAI_API_KEY environment variable is not set. Please set it in your .env file.")
 
 # Configure logging
 logging.basicConfig(
@@ -239,7 +240,8 @@ class AgentRunner:
     def _call_gpt(self, messages: List[Dict]) -> Dict:
         """Call GPT API with function calling capability."""
         try:
-            print(self.function_schemas)
+            logger.info(f"Sending messages to GPT: {json.dumps(messages, indent=2)}")
+
             # Initial API call with tools
             completion = self.client.chat.completions.create(
                 model="gpt-4o-mini",
@@ -248,7 +250,7 @@ class AgentRunner:
             )
             
             message = completion.choices[0].message
-            print (message)
+            logger.info(f"GPT Response: {message.content if message.content else 'No content'}")
             
             # Check if the model wants to call a function
             if hasattr(message, 'tool_calls') and message.tool_calls:
@@ -278,6 +280,7 @@ class AgentRunner:
                         
                         if func_name in self.tools:
                             try:
+                                logger.info(f"Executing tool: {func_name} with args: {func_args}")
                                 tool_func = self.tools[func_name]
                                 # Call function directly
                                 result = tool_func(**func_args)
@@ -291,6 +294,7 @@ class AgentRunner:
                                         "data": result,
                                         "error": None
                                     }
+                                logger.info(f"Tool {func_name} result: {formatted_result}")
                                 
                                 messages.append({
                                     "role": "tool",
@@ -311,11 +315,12 @@ class AgentRunner:
                 
                 # Get final response after tool calls
                 final_completion = self.client.chat.completions.create(
-                    model="gpt-4-turbo-preview",
+                    model="gpt-4o-mini",
                     messages=messages
                 )
-                
-                return final_completion.choices[0].message
+                final_message = final_completion.choices[0].message
+                logger.info(f"Final GPT Response: {final_message.content if final_message.content else 'No content'}")
+                return final_message
             
             return message
             
@@ -356,6 +361,7 @@ class AgentRunner:
             
         # Sleep if frequency is specified
         if 'frequency' in task:
+            logger.info(f"Sleeping for {task['frequency']} seconds")
             time.sleep(task['frequency'])
 
     def run(self):
