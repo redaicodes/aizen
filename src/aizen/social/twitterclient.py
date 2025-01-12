@@ -91,11 +91,11 @@ class TwitterClient:
         # Initialize client and login
         self.client = Client(language)
         try:
-            # self.client.login(
-            #     auth_info_1=self.username,
-            #     auth_info_2=self.email,
-            #     password=self.password
-            # )
+            self.client.login(
+                auth_info_1=self.username,
+                auth_info_2=self.email,
+                password=self.password
+            )
             self.logger.info(f"Successfully logged in as user: {self.username}")
             self.logger.info("Twitter client initialized and logged in successfully")
         except Exception as e:
@@ -119,10 +119,10 @@ class TwitterClient:
             Exception: If tweet posting fails
         """
         try:
-            # tweet = await self.client.create_tweet(text=text)
-            # result = await self.client.get_tweet_by_id(str(tweet))
-            # self.logger.info(f"Tweet posted successfully with ID: {tweet}")
-            # return format_tweet_object(result)
+            tweet = await self.client.create_tweet(text=text)
+            result = await self.client.get_tweet_by_id(str(tweet))
+            self.logger.info(f"Tweet posted successfully with ID: {tweet}")
+            return format_tweet_object(result)
             return
             
         except Exception as e:

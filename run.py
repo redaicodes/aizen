@@ -1,3 +1,4 @@
+import asyncio
 import json
 import logging
 import argparse
@@ -262,35 +263,44 @@ class AgentRunner:
                                     "type": "function",
                                     "function": self.function_definitions[full_name]
                                 })
-
-    def _call_gpt(self, messages: List[Dict]) -> Dict:
-        """Call GPT API with function calling capability."""
-        try:
-            logger.info(f"Sending messages to GPT: {json.dumps(messages, indent=2)}")
-            # Initial API call with tools
-            completion = self.client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=[msg for msg in messages if msg["role"] != "tool"],
-                tools=self.function_schemas
-            )
-            
-            message = completion.choices[0].message
-            logger.info(f"GPT Response: {message.content if message.content else 'No content'}")
-            if hasattr(message, 'tool_calls') and message.tool_calls:
-                logger.info("Tool Calls in Response:")
-                for tool_call in message.tool_calls:
-                    logger.info(f"  - Tool: {tool_call.function.name}")
-                    logger.info(f"    Args: {tool_call.function.arguments}")
-            
-            # Check if the model wants to call a function
-            if hasattr(message, 'tool_calls') and message.tool_calls:
-                tool_calls = message.tool_calls
+    
+    def execute_task(self, task: Dict):
+        """Execute a single task with GPT interaction."""
+        gpt_calls = 0
+        
+        # Initialize messages for the conversation
+        messages = [
+            {"role": "system", "content": self.config['system_prompt']},
+            *self.chat_history,
+            {"role": "user", "content": task['prompt']}
+        ]
+        
+        while gpt_calls < self.max_gpt_calls:
+            try:
+                logger.info(f"Sending messages to GPT: {json.dumps(messages, indent=2)}")
                 
-                # Add assistant message with tool calls
+                # Call GPT with tools
+                completion = self.client.chat.completions.create(
+                    model="gpt-4o-mini",
+                    messages=messages,
+                    tools=self.function_schemas
+                )
+                
+                message = completion.choices[0].message
+                logger.info(f"GPT Response: {message.content if message.content else 'No content'}")
+                
+                # Log tool calls if present
+                if hasattr(message, 'tool_calls') and message.tool_calls:
+                    logger.info("Tool Calls in Response:")
+                    for tool_call in message.tool_calls:
+                        logger.info(f"  - Tool: {tool_call.function.name}")
+                        logger.info(f"    Args: {tool_call.function.arguments}")
+                
+                # Add assistant's message to conversation
                 messages.append({
                     "role": "assistant",
                     "content": message.content if message.content else "",
-                    "tool_calls": [
+                    **({"tool_calls": [
                         {
                             "id": call.id,
                             "type": call.type,
@@ -298,12 +308,17 @@ class AgentRunner:
                                 "name": call.function.name,
                                 "arguments": call.function.arguments
                             }
-                        } for call in tool_calls
-                    ]
+                        } for call in message.tool_calls
+                    ]} if hasattr(message, 'tool_calls') and message.tool_calls else {})
                 })
                 
-                # Execute each tool call
-                for tool_call in tool_calls:
+                # If no tool calls, task is complete
+                if not hasattr(message, 'tool_calls') or not message.tool_calls:
+                    self.chat_history.append(messages[-1])  # Add final response to chat history
+                    break
+                
+                # Execute tool calls and add results to conversation
+                for tool_call in message.tool_calls:
                     if tool_call.type == 'function':
                         func_name = tool_call.function.name
                         func_args = json.loads(tool_call.function.arguments)
@@ -312,10 +327,14 @@ class AgentRunner:
                             try:
                                 logger.info(f"Executing tool: {func_name} with args: {func_args}")
                                 tool_func = self.tools[func_name]
-                                # Call function directly
-                                result = tool_func(**func_args)
+                                # Execute tool with proper sync/async handling
+                                if asyncio.iscoroutinefunction(tool_func):
+                                    loop = asyncio.get_event_loop()
+                                    result = loop.run_until_complete(tool_func(**func_args))
+                                else:
+                                    result = tool_func(**func_args)
                                 
-                                # Standardize the result format
+                                # Standardize result format
                                 if isinstance(result, dict) and "success" in result:
                                     formatted_result = result
                                 else:
@@ -324,13 +343,14 @@ class AgentRunner:
                                         "data": result,
                                         "error": None
                                     }
-                                logger.info(f"Tool {func_name} result: {formatted_result}")
                                 
+                                logger.info(f"Tool {func_name} result: {formatted_result}")
                                 messages.append({
                                     "role": "tool",
                                     "content": json.dumps(formatted_result),
                                     "tool_call_id": tool_call.id
                                 })
+                                
                             except Exception as e:
                                 logger.error(f"Error in tool {func_name}: {str(e)}")
                                 messages.append({
@@ -343,64 +363,17 @@ class AgentRunner:
                                     "tool_call_id": tool_call.id
                                 })
                 
-                logger.info(f"Sending function response to GPT: {json.dumps(messages, indent=2)}")
-
-                # Get final response after tool calls
-                final_completion = self.client.chat.completions.create(
-                    model="gpt-4o-mini",
-                    messages=messages,
-                    tools=self.function_schemas
-                )
-                final_message = final_completion.choices[0].message
-                logger.info(f"Final GPT Response: {final_message.content if final_message.content else 'No content'}")
-                if hasattr(final_message, 'tool_calls') and final_message.tool_calls:
-                    logger.info("Tool Calls in Response:")
-                    for tool_call in final_message.tool_calls:
-                        logger.info(f"  - Tool: {tool_call.function.name}")
-                        logger.info(f"    Args: {tool_call.function.arguments}")
-                return final_message
-            
-            return message
-            
-        except Exception as e:
-            logger.error(f"Error calling GPT: {str(e)}")
-            raise
-
-    def execute_task(self, task: Dict):
-        """Execute a single task with GPT interaction."""
-        gpt_calls = 0
-        
-        while gpt_calls < self.max_gpt_calls:
-            try:
-                # Prepare messages for GPT
-                messages = [
-                    {"role": "system", "content": self.config['system_prompt']},
-                    *self.chat_history,
-                    {"role": "user", "content": task['prompt']}
-                ]
-                
-                # Call GPT
-                response = self._call_gpt(messages)
-                
-                self.chat_history.append({
-                    "role": "assistant",
-                    "content": response.content if hasattr(response, 'content') else str(response)
-                })
-                
                 gpt_calls += 1
                 
-                # If no tool calls were made, task is complete
-                if not hasattr(response, 'tool_calls') or not response.tool_calls:
-                    break
-                    
             except Exception as e:
                 logger.error(f"Error in execute_task: {str(e)}")
                 break
-            
+    
         # Sleep if frequency is specified
         if 'frequency' in task:
-            logger.info(f"Sleeping for {task['frequency']} minutes")
-            time.sleep(task['frequency']*60)
+            minutes = task['frequency']
+            logger.info(f"Sleeping for {minutes} minutes")
+            time.sleep(minutes * 60)
 
     def run(self):
         """Main execution loop for the agent."""
