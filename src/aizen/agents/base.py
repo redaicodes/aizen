@@ -6,25 +6,6 @@ import inspect
 from functools import partial
 
 
-class ToolInterface:
-    """Base interface for agent tools."""
-
-    def __init__(self, name: str, func: Callable, logger: logging.Logger):
-        self.name = name
-        self.func = func
-        self.logger = logger
-
-    async def run(self, *args, **kwargs):
-        """Execute the tool function."""
-        try:
-            if asyncio.iscoroutinefunction(self.func):
-                return await self.func(*args, **kwargs)
-            return self.func(*args, **kwargs)
-        except Exception as e:
-            self.logger.error(f"Error in tool {self.name}: {str(e)}")
-            raise
-
-
 class AgentConfig(BaseModel):
     """Configuration for an autonomous agent."""
     name: str
@@ -40,98 +21,57 @@ class BaseAgent:
 
     def __init__(self, config: AgentConfig, llm_callback: Optional[Callable] = None):
         self.config = config
-        self.tools: Dict[str, ToolInterface] = {}
+        self.tools: Dict[str, Any] = {}  # Tools are stored directly on self
         self.llm = llm_callback
         self.state: Dict = {"transactions": [], "observations": []}
-        self.tool_instances: Dict[str, Any] = {}  # Store tool class instances
-
+        
         # Initialize logger
         self.logger = logging.getLogger(f"Agent.{self.config.name}")
-        if not self.logger.handlers:  # Prevent duplicate handlers
+        if not self.logger.handlers:
             handler = logging.StreamHandler()
             formatter = logging.Formatter(
                 '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
             )
             handler.setFormatter(formatter)
             self.logger.addHandler(handler)
-
-        # Set logging level based on config
+            
         self.logger.setLevel(
-            logging.DEBUG if self.config.debug_mode else logging.INFO)
-
-        self.logger.debug("Agent initialized with debug mode") if self.config.debug_mode \
-            else self.logger.info("Agent initialized")
-
-    def register_tool_class(self, name: str, tool_class: Type, **kwargs):
-        """
-        Register a tool class and all its public methods as tools.
-
-        Args:
-            name (str): Base name for the tool
-            tool_class (Type): Class to instantiate as a tool
-            **kwargs: Arguments to pass to the tool class constructor
-        """
-        self.logger.info(f"Registering tool class: {name}")
-
-        # Create instance of the tool class
-        try:
-            instance = tool_class(**kwargs)
-            self.tool_instances[name] = instance
-
-            # Get all public methods that don't start with _
-            methods = inspect.getmembers(instance,
-                                         predicate=lambda x: inspect.ismethod(x) and not x.__name__.startswith('_'))
-
-            # Register each method as a tool
-            for method_name, method in methods:
-                tool_full_name = f"{name}.{method_name}"
-                self.register_tool(tool_full_name, method)
-                self.logger.debug(f"Registered tool method: {tool_full_name}")
-
-            self.logger.info(f"Successfully registered {
-                             len(methods)} methods from {name}")
-
-        except Exception as e:
-            self.logger.error(f"Error registering tool class {name}: {str(e)}")
-            raise
+            logging.DEBUG if self.config.debug_mode else logging.INFO
+        )
 
     def register_tool(self, name: str, tool_func: Callable):
-        """Register a single tool function."""
-        self.logger.debug(f"Registering individual tool: {name}")
-        self.tools[name] = ToolInterface(name, tool_func, self.logger)
-
-    async def run_tool(self, tool_name: str, *args, **kwargs):
-        """Execute a specific tool."""
-        self.logger.debug(f"Executing tool: {tool_name} with args: {
-                          args}, kwargs: {kwargs}")
-
-        if tool_name not in self.tools:
-            self.logger.error(f"Tool not found: {tool_name}")
-            raise KeyError(f"Tool {tool_name} not found")
-
+        """Register a tool function."""
         try:
-            tool_func = self.tools[tool_name].func
-
-            # If it's a synchronous function, run it in a thread pool
-            if not asyncio.iscoroutinefunction(tool_func):
-                loop = asyncio.get_event_loop()
-                result = await loop.run_in_executor(None, lambda: tool_func(*args, **kwargs))
-            else:
-                result = await tool_func(*args, **kwargs)
-
-            self.state["observations"].append({
-                "tool": tool_name,
-                "args": args,
-                "kwargs": kwargs,
-                "result": result
-            })
-
-            self.logger.debug(f"Tool {tool_name} executed successfully")
-            return result
-
+            self.logger.debug(f"Registering tool: {name}")
+            self.tools[name] = tool_func
+            self.logger.debug(f"Successfully registered tool: {name}")
         except Exception as e:
-            self.logger.error(f"Error executing tool {tool_name}: {str(e)}")
+            self.logger.error(f"Error registering tool {name}: {str(e)}")
             raise
+
+    async def run_tool(self, tool_name: str, **kwargs):
+        """Execute a tool with improved error handling."""
+        try:
+            if tool_name not in self.tools:  # Check tools directly on self
+                available_tools = list(self.tools.keys())
+                raise ValueError(
+                    f"Tool {tool_name} not found. Available tools: {available_tools}"
+                )
+            
+            tool = self.tools[tool_name]  # Get tool directly from self.tools
+            result = await tool(**kwargs)
+            
+            if not result["success"]:
+                self.logger.error(f"Tool {tool_name} failed: {result['error']}")
+                return result["error"]  # Return error message for GPT
+                
+            self.logger.info(f"Tool {tool_name} executed successfully")
+            return result["data"]  # Return actual data for GPT
+            
+        except Exception as e:
+            error_msg = f"Error executing {tool_name}: {str(e)}"
+            self.logger.error(error_msg, exc_info=True)
+            return error_msg  # Return error message for GPT
 
     async def think(self, context: Dict):
         """Process context and decide next action."""
@@ -148,47 +88,3 @@ class BaseAgent:
         except Exception as e:
             self.logger.error(f"Error in think phase: {str(e)}")
             raise
-
-    async def run(self, task: Dict):
-        """Execute agent task."""
-        self.logger.info(f"Starting task execution with max {
-                         self.config.max_iterations} iterations")
-        iteration = 0
-
-        while iteration < self.config.max_iterations:
-            try:
-                self.logger.debug(f"Starting iteration {iteration + 1}")
-
-                action = await self.think({
-                    "task": task,
-                    "state": self.state,
-                    "tools": list(self.tools.keys())
-                })
-
-                if not action or action.get("type") == "complete":
-                    self.logger.info("Task completion signaled")
-                    break
-
-                result = await self.run_tool(
-                    action["tool"],
-                    *action.get("args", []),
-                    **action.get("kwargs", {})
-                )
-
-                # Store the result and action in state
-                self.state["transactions"].append({
-                    "iteration": iteration,
-                    "action": action,
-                    "result": result
-                })
-
-                iteration += 1
-                self.logger.debug(f"Completed iteration {
-                                  iteration} with result: {result}")
-
-            except Exception as e:
-                self.logger.error(f"Error in task execution: {str(e)}")
-                raise
-
-        self.logger.info("Task execution completed")
-        return self.state
