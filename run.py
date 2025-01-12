@@ -361,8 +361,8 @@ class AgentRunner:
             
         # Sleep if frequency is specified
         if 'frequency' in task:
-            logger.info(f"Sleeping for {task['frequency']} seconds")
-            time.sleep(task['frequency'])
+            logger.info(f"Sleeping for {task['frequency']} minutes")
+            time.sleep(task['frequency']*60)
 
     def run(self):
         """Main execution loop for the agent."""
