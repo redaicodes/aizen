@@ -277,7 +277,7 @@ class AgentRunner:
             
             message = completion.choices[0].message
             logger.info(f"GPT Response: {message.content if message.content else 'No content'}")
-            if hasattr(final_message, 'tool_calls') and message.tool_calls:
+            if hasattr(message, 'tool_calls') and message.tool_calls:
                 logger.info("Tool Calls in Response:")
                 for tool_call in message.tool_calls:
                     logger.info(f"  - Tool: {tool_call.function.name}")
