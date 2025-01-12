@@ -88,14 +88,19 @@ class TwitterClient:
         self.email = email
         self.password = password
         
-        # Initialize client and login
+        # Initialize client
         self.client = Client(language)
+        
+        # Initialize in event loop
         try:
-            self.client.login(
-                auth_info_1=self.username,
-                auth_info_2=self.email,
-                password=self.password
-            )
+            loop = asyncio.get_event_loop()
+        except RuntimeError:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+        
+        # Login using the event loop
+        try:
+            loop.run_until_complete(self._async_init())
             self.logger.info(f"Successfully logged in as user: {self.username}")
             self.logger.info("Twitter client initialized and logged in successfully")
         except Exception as e:
@@ -103,6 +108,13 @@ class TwitterClient:
             self.logger.error(error_msg)
             raise ValueError(error_msg)
 
+    async def _async_init(self):
+        """Async initialization for the client."""
+        await self.client.login(
+            auth_info_1=self.username,
+            auth_info_2=self.email,
+            password=self.password
+        )
 
     async def post_tweet(self, text: str) -> Dict:
         """
