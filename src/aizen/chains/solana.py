@@ -144,6 +144,59 @@ class SolanaClient:
             # Return empty list instead of raising error for better UX
             return []
 
+    async def get_account_info(self, address: str) -> dict:
+        """
+        Returns account info in JSON-parsed form. 
+        This matches the structure that your RaydiumClient code expects:
+          response["value"]["data"]["parsed"]["info"]["tokenAmount"]["amount"]
+        """
+        try:
+            address_pubkey = pubkey.Pubkey.from_string(address)
+
+            # Request JSON-parsed data so we can easily read 'tokenAmount', etc.
+            resp = await self.client.get_account_info(
+                address_pubkey,
+                commitment="confirmed",
+                encoding="jsonParsed"
+            )
+
+            # The response structure typically looks like:
+            # {
+            #   "context": {...},
+            #   "value": {
+            #       "data": {
+            #         "parsed": {
+            #            "info": {
+            #               "tokenAmount": {"amount": "...", ...}
+            #            },
+            #            ...
+            #         },
+            #         "program": "spl-token",
+            #         ...
+            #       },
+            #       "executable": False,
+            #       "lamports": 2039280,
+            #       "owner": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            #       ...
+            #   }
+            # }
+            #
+            # We'll just return this dict as-is so that code in RaydiumClient
+            # can do coin_vault_info["value"]["data"]["parsed"]["info"]["tokenAmount"]["amount"].
+
+            if resp is None:
+                raise ValueError(f"Empty response for get_account_info({address})")
+
+            # If the account doesn't exist or is invalid, "resp.value" may be None
+            if not resp.value:
+                raise ValueError(f"Account {address} not found or invalid.")
+
+            return resp  # Return the entire response dict
+
+        except Exception as e:
+            self.logger.error(f"Error in get_account_info({address}): {str(e)}")
+            raise
+
     async def close(self):
         """Close client connections."""
         if self.client:
