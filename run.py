@@ -181,6 +181,20 @@ class AgentRunner:
             }
         }
 
+    def _load_function_definitions(self) -> Dict:
+        """Load and parse function definitions from JSON file."""
+        try:
+            # Load from ./src/function_definitions.json
+            definitions_path = Path("./src/function_definitions.json")
+            with open(definitions_path) as f:
+                definitions = json.load(f)
+                
+            # Convert to dict for easier lookup
+            return {func["name"]: func for func in definitions}
+        except Exception as e:
+            logger.error(f"Error loading function definitions: {str(e)}")
+            raise
+
     def _initialize_tools(self):
         """Initialize tool classes and register their methods."""
         CLASS_MAPPING = {
@@ -189,53 +203,65 @@ class AgentRunner:
             'twitterclient': 'aizen.social.twitterclient.TwitterClient'
         }
 
-        # Process each tool in config
+        # Load function definitions
+        self.function_definitions = self._load_function_definitions()
+        
+        # Track unique class names from both specific functions and class-level tools
+        required_classes = set()
+        tools_to_register = []  # Store tools for registration after class initialization
+        
+        # First pass: validate tools and collect required classes
         for tool in self.config['tools']:
-            # Handle both class-level and method-level tool specifications
             if '__' in tool:
+                # Specific function mentioned (e.g., 'blockworks__get_latest_news')
+                if tool not in self.function_definitions:
+                    raise ValueError(f"Function {tool} not found in function definitions")
                 class_name, method_name = tool.split('__')
-                if class_name not in self.tool_instances:
-                    if class_name not in CLASS_MAPPING:
-                        raise ValueError(f"Unknown tool class: {class_name}")
-                    
-                    # Initialize class
-                    class_path = CLASS_MAPPING[class_name]
-                    cls = self._get_class_from_path(class_path)
-                    self.tool_instances[class_name] = cls()
-                    
-                # Register method
-                method = getattr(self.tool_instances[class_name], method_name)
-                # Store the raw method without wrapping
-                self.tools[tool] = method
-                
-                # Generate and store function schema
-                schema = self._get_function_schema(method)
-                schema["function"]["name"] = tool  # Use full tool name (class__method)
-                self.function_schemas.append(schema)
-                
+                required_classes.add(class_name)
+                tools_to_register.append(("method", tool))
             else:
-                # Handle class-level registration
+                # Full class mentioned (e.g., 'blockworks')
                 if tool not in CLASS_MAPPING:
                     raise ValueError(f"Unknown tool class: {tool}")
-                
-                class_path = CLASS_MAPPING[tool]
-                cls = self._get_class_from_path(class_path)
-                instance = cls()
-                self.tool_instances[tool] = instance
-                
-                # Register all public methods
+                required_classes.add(tool)
+                tools_to_register.append(("class", tool))
+
+        # Initialize all required classes
+        logger.info(f"Initializing classes: {required_classes}")
+        for class_name in required_classes:
+            if class_name not in CLASS_MAPPING:
+                raise ValueError(f"Unknown tool class: {class_name}")
+            
+            class_path = CLASS_MAPPING[class_name]
+            cls = self._get_class_from_path(class_path)
+            self.tool_instances[class_name] = cls()
+            logger.info(f"Initialized {class_name} instance")
+
+        # Second pass: register tools and methods
+        for tool_type, tool in tools_to_register:
+            if tool_type == "method":
+                # Register specific method
+                class_name, method_name = tool.split('__')
+                method = getattr(self.tool_instances[class_name], method_name)
+                self.tools[tool] = method
+                self.function_schemas.append({
+                    "type": "function",
+                    "function": self.function_definitions[tool]
+                })
+            else:
+                # Register all methods of the class that are in function definitions
+                instance = self.tool_instances[tool]
                 for attr_name in dir(instance):
                     if not attr_name.startswith('_'):
-                        attr = getattr(instance, attr_name)
-                        if callable(attr):
-                            tool_name = f"{tool}__{attr_name}"
-                            # Store raw method
-                            self.tools[tool_name] = attr
-                            
-                            # Generate and store function schema
-                            schema = self._get_function_schema(attr)
-                            schema["function"]["name"] = tool_name
-                            self.function_schemas.append(schema)
+                        full_name = f"{tool}__{attr_name}"
+                        if full_name in self.function_definitions:
+                            attr = getattr(instance, attr_name)
+                            if callable(attr):
+                                self.tools[full_name] = attr
+                                self.function_schemas.append({
+                                    "type": "function",
+                                    "function": self.function_definitions[full_name]
+                                })
 
     def _call_gpt(self, messages: List[Dict]) -> Dict:
         """Call GPT API with function calling capability."""
@@ -251,6 +277,11 @@ class AgentRunner:
             
             message = completion.choices[0].message
             logger.info(f"GPT Response: {message.content if message.content else 'No content'}")
+            if hasattr(final_message, 'tool_calls') and message.tool_calls:
+                logger.info("Tool Calls in Response:")
+                for tool_call in message.tool_calls:
+                    logger.info(f"  - Tool: {tool_call.function.name}")
+                    logger.info(f"    Args: {tool_call.function.arguments}")
             
             # Check if the model wants to call a function
             if hasattr(message, 'tool_calls') and message.tool_calls:
@@ -313,6 +344,8 @@ class AgentRunner:
                                     "tool_call_id": tool_call.id
                                 })
                 
+                logger.info(f"Sending function response to GPT: {json.dumps(messages, indent=2)}")
+
                 # Get final response after tool calls
                 final_completion = self.client.chat.completions.create(
                     model="gpt-4o-mini",
@@ -320,6 +353,11 @@ class AgentRunner:
                 )
                 final_message = final_completion.choices[0].message
                 logger.info(f"Final GPT Response: {final_message.content if final_message.content else 'No content'}")
+                if hasattr(final_message, 'tool_calls') and final_message.tool_calls:
+                    logger.info("Tool Calls in Response:")
+                    for tool_call in final_message.tool_calls:
+                        logger.info(f"  - Tool: {tool_call.function.name}")
+                        logger.info(f"    Args: {tool_call.function.arguments}")
                 return final_message
             
             return message
