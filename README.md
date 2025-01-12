@@ -1,5 +1,7 @@
 <div align="center">
   <img src="./docs/assets/aizen_logo.png" width="50%">
+
+  AI agents with superpowers - talk is cheap, action is game changer
   
   [![PyPI version](https://img.shields.io/pypi/v/aizen?color=blue&style=for-the-badge)](https://pypi.org/project/aizen)
   [![Python version](https://img.shields.io/badge/Python-3.8+-blue.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/downloads/)
@@ -9,207 +11,113 @@
 </div>
 
   
----
-
-Empowering Web3 AI agents with real superpowers - because talking is nice, but doing is better.
-
 ## Table of Contents
 - [Installation](#installation)
 - [Quick Start](#quick-start)
-- [The Problem We're Solving](#the-problem-were-solving)
-- [What Makes Aizen Different](#what-makes-aizen-different)
-- [Features](#features)
+- [The Next Generation of AI Agents](#the-next-generation-of-ai-agents)
+- [Platform Goals](#-platform-goals)
+- [What makes Aizen Agents the Best](#what-makes-aizen-agents-the-best)
+- [Key Features](#key-features)
 - [Real-World Examples](#real-world-examples)
-- [Why Python](#why-python)
-- [Roadmap](#roadmap)
+- [Why Python? The Perfect Fit for Our Platform](#why-python-the-perfect-fit-for-our-platform)
+- [Upcoming Features: Building the Ultimate AI Agent Framework](#-upcoming-features-building-the-ultimate-ai-agent-framework)
 - [Contributing](#contributing)
 - [Community](#community)
 - [License](#license)
 
 ## Installation
 
-Getting started is as simple as:
-
 ```bash
-pip install aizen
+pip install aizen-agents
 ```
 
 Need help? Check out our [installation guide](https://docs.aizen.io/installation).
 
 ## Quick Start
 
-Create your first AI agent in minutes:
-
-```python
-from aizen import Agent
-from aizen.tools import ChainTools
-
-# Initialize a basic agent with common tools
-agent = Agent(
-    name="CryptoWatcher",
-    openai_key="your-openai-key",  # For AI capabilities
-    wallet_key="your-private-key"   # For on-chain actions
-)
-
-# Register tools the agent might need
-agent.register_tools([
-    ChainTools.Ethereum(),      # Ethereum data and interactions
-    ChainTools.PriceFeeds(),    # Price monitoring
-    ChainTools.Notifications()  # Alerts and updates
-])
-
-# Set up monitoring with natural language
-async def main():
-    # Tell the agent what to do in plain English
-    await agent.execute("""
-        Monitor ETH price and volume.
-        If any of these happen:
-        - Volume increases by 50% in 24h
-        - Price drops more than 10% in an hour
-        - Large whale wallet moves over 1000 ETH
-        Then:
-        - Send an alert to Discord
-        - If it's a price drop, check social sentiment
-        - If sentiment is positive, buy $100 worth of ETH
-    """)
-
-# Start the agent
-if __name__ == "__main__":
-    import asyncio
-    asyncio.run(main())
-```
-
-That's it! Your agent will now:
-- Monitor ETH market conditions
-- Send alerts when significant events occur
-- Automatically analyze and act on opportunities
-
-Want more advanced features? Visit our [documentation](https://docs.aizen.io) for:
-- Trading strategies
-- Portfolio management
-- MEV protection
-- Cross-chain operations
-- Custom tool creation
-
-## The Problem We're Solving
-
-Here's a question: Why are most Web3 AI agents today just fancy chatbots? They can talk about blockchain, sure. They might even sound smart. But when it comes to actually doing something meaningful - monitoring real-time data, executing trades, participating in governance - they fall flat.
-
-It's like having a financial advisor who can only read yesterday's newspaper and can't actually make trades for you. Not very useful, right?
-
-The problem isn't with the AI models themselves. The problem is that these agents lack the tools to interact with the real world of Web3. They're like craftsmen without their tools, or artists without their brushes.
-
-## What Makes Aizen Different
-
-Aizen is built on a simple principle: an agent's power comes from its ability to access information and take action. Think of it as giving your AI agents superpowers.
-
-Want an agent that:
-- Monitors whale movements across multiple chains and reacts instantly?
-- Analyzes governance proposals and votes based on your criteria?
-- Tracks specific smart contract events and automatically provides liquidity?
-- Combines news sentiment with on-chain data to make trading decisions?
-
-With Aizen, this isn't science fiction - it's just a few lines of code.
-
-## Features
-
-The power of Aizen comes from its ability to understand natural language instructions and automatically choose the right tools for the job. Here's how it works:
-
-### Natural Language Commands
-
-Instead of writing complex code, just tell your agent what you want:
-
-```python
-# Create an agent with access to various tools
-agent = Agent(
-    name="CryptoTrader",
-    tools=[
-        "news", "dex", "social_sentiment",
-        "wallet", "governance", "nft"
+1. Clone the repo: `git clone https://github.com/redaicodes/aizen.git`
+2. Navigate to the repo: `cd aizen`
+3. Create environment file: `cp .env.example .env` and fill in your OPENAI_API_KEY, TWITTER_USERNAME and TWITTER_PASSWORD
+5. Define agent in a json file: `agent.json`
+```json
+{
+    "name": "CryptoPulse",
+    "tools": ["blockworks__get_latest_news", "twitterclient__post_tweet"],
+    "system_prompt": "You are CryptoPulse, a passionate and insightful crypto analyst with a talent for distilling complex news into engaging tweets. Your personality is informative yet approachable, using emojis strategically and maintaining a professional but friendly tone. You specialize in:\n- Breaking down complex crypto news into digestible insights\n- Highlighting key market movements and protocol updates\n- Using relevant hashtags and crypto terminology\n- Maintaining a balanced perspective on market events\nStay objective but engaging, and always provide context for your tweets.",
+    "tasks": [
+        {
+            "prompt": "Fetch the latest crypto news and create an engaging tweet that summarizes the most important development. Don't include hashtags and maintain a professional but engaging tone. Focus on potential market impact and user implications.",
+            "frequency": 30
+        }
     ]
-)
+}
+```
+4. Run the agent locally: `python run.py —agent agent.json`
 
-# Give instructions in plain English
-await agent.execute("""
-    If ETH price increases by more than 5% in the last hour 
-    and social sentiment is positive, buy $1000 worth of ETH. 
-    Also check NFT floor prices and if any blue chips are down >20%, 
-    buy the cheapest one.
-""")
+That's it! Your agent will now do the following every 30 mins:
+- Use the `blockworks__get_latest_news` tool to get the latest news from Blockworks
+- Using the LLM, summarize the most important developments and write an insightful tweet
+- Post the tweet on X
+
+Note that the agent comes up with the entire action plan based on the task and availability of tools. Tasks can be extremely complex and the agent would still work
+
+##  The Next Generation of AI Agents  
+We admire Eliza and Zerepy for pioneering autonomous Web3 AI agents, focusing on social interaction across platforms. However, the next generation of AI models must be more than just talkers—they need to plan and take action.  
+
+**DeFAI (Decentralized Financial AI)** is about making AI active participants in DeFi ecosystems. These agents will generate yield, manage lending, provide liquidity, and optimize strategies for profitable financial participation. Their ability to automate complex financial operations can significantly expand market efficiency and accessibility.  
+
+**DeScAI (Decentralized Scientific AI)** will transform how innovation happens. These models won't just summarize papers—they'll analyze research, propose novel ideas, run experiments, validate results, secure funding, and launch new protocols. By taking on end-to-end scientific processes, they can drive discovery at an unprecedented scale.  
+
+Both DeFAI and DeScAI mark a shift from passive models to active agents capable of meaningful, autonomous contribution. This isn't just an upgrade—it's a transformation with outsized importance, as these agents won't just assist but directly impact financial markets and scientific progress.
+These agents would need access to advanced tools like:
+
+- 📊 **Data Retrievers:** Real-time data from APIs and sites like *Blockworks, Defillama, The Block, VC websites, X*, and more.  
+- 🧮 **Mathematical Tools:** Perform complex calculations with high reliability.  
+- 🤖 **Machine Learning Frameworks:** Solve problems using multiple ML models.  
+- 🔗 **Onchain Tools:** Query onchain data, interact with smart contracts, and swap tokens.  
+- 📣 **Social Interaction Tools:** Engage on platforms like *X, TikTok, Instagram*, and others.
+
+## 🎯 **Platform Goals**
+Aizen is **the** best platform for creating the next generation of smart agents. It's a **unified platform** empowering both builders and users! 🚀   
+
+**🛠️ For Builders:**  Easily create Python-based tools and share them with the community. THese tools can be used by agents based on their planning  
+**💡 For Users:** Launch powerful AI agents using **English** as your programming language
+
+## What makes Aizen Agents the Best
+>"A goal without a plan is just a wish." – Antoine de Saint-Exupéry
+
+**It's All About the Complexity They Can Handle.**  
+
+Aizen agents break complex tasks into smaller, manageable steps based on available tools. They don’t just plan—they execute, adjust when necessary, report success and failure, and provide proof of work every step of the way. Here's a diagram that illustrates how Aizen agents continuously plan, execute, adapt, and validate results throughout a task's lifecycle:
+
+```mermaid
+graph TD
+    U[User Requests Task] --> A[Identify Tools & Plan Steps]
+    A --> B[Execute Steps]
+    B --> C{Task Complete?}
+    C -->|Yes| D[Report Success & Proof of Work]
+    C -->|No| E[Adjust Plan & Retry]
+    E --> B
+    D --> U
 ```
 
-The agent automatically:
-1. Picks the right tools for price checking and sentiment analysis
-2. Monitors relevant data sources
-3. Executes trades when conditions are met
+## Key Features  
 
-### Composable Tools
+Our library is designed with simplicity, efficiency, and developer experience in mind. Here’s what sets it apart:  
 
-Agents can access a growing ecosystem of tools:
+- **Minimal Boilerplate:** Write clean and concise code without unnecessary complexity, allowing you to focus on building functionality rather than setting up repetitive scaffolding.  
 
-```python
-# Register available tools
-agent.register_tools([
-    NewsTools(),          # News and market updates
-    DexTools(),           # DEX interactions and pricing
-    SocialTools(),        # Social media sentiment
-    WalletTools(),        # Wallet operations
-    GovernanceTools(),    # DAO participation
-    NFTTools()            # NFT market data
-])
+- **Smaller Codebase:** A lean and efficient codebase ensures easier navigation, quicker understanding, and reduced maintenance overhead.  
 
-# Agent automatically picks relevant tools based on the task
-await agent.execute("""
-    Monitor Uniswap governance.
-    If any proposal affects trading fees,
-    analyze sentiment from Discord and Twitter.
-    If community is positive and price impact looks minimal,
-    vote in favor and notify me on Discord.
-""")
-```
+- **Minimally Restrictive:** Provides flexibility to adapt and integrate seamlessly into various workflows, giving developers the freedom to use it their way.  
 
-### Built-in Safety
+- **Ease of Use:** Designed for simplicity and rapid learning. Spend less time reading documentation and more time building, thanks to intuitive APIs and clear examples.  
 
-Agents have built-in safety features:
-- Transaction simulation before execution
-- Slippage protection
-- Gas optimization
-- Sandwich attack prevention
-- Intelligent error handling
+- **Robust Production-Ready Code:** Get features that are ready for deployment, including automatic generation of **interactive documentation** to streamline your development and collaboration processes.  
 
-For example:
-```python
-await agent.execute("""
-    Find arbitrage opportunities between Uniswap V3 and Sushiswap 
-    for the USDC/ETH pair. Execute trades only if:
-    - Profit > $100 after gas
-    - Slippage < 1%
-    - No sandwich attack risk
-    Send me a Discord message before executing.
-""")
-```
+- **Exceptional Logging:** Advanced logging capabilities make error tracking straightforward, providing comprehensive tools to debug efficiently and ensure reliability in production environments.  
 
-### Community-Driven Tool Ecosystem
-
-Anyone can create and share tools:
-
-```python
-from aizen import Tool, register
-
-@register("sentiment_analysis")
-class CustomSentimentTool(Tool):
-    """Analyzes market sentiment from custom data sources"""
-    
-    async def analyze(self, text: str) -> float:
-        # Your custom sentiment analysis logic
-        return sentiment_score
-
-# Now other agents can use your tool
-await agent.execute("""
-    Use the custom sentiment analyzer to check market mood.
-    If sentiment is above 0.8, increase ETH position by 10%.
-""")
-```
+This library is built to save time, simplify processes, and deliver high-quality outcomes.  
 
 ## Real-World Examples
 
@@ -297,33 +205,47 @@ Aizen enables creating various specialized agents like:
 - **MEV Agents**: Identify and capture MEV opportunities while protecting user transactions
 - **Research Agents**: Generate in-depth analysis combining on-chain data with market research
 
+## Why Python? The Perfect Fit for Our Platform  
 
-## Why Python
+Python is the **leading language for scientific computing and AI**, making it ideal for our platform due to its powerful tools, flexibility, and wide adoption.  
 
-We chose Python for a few simple reasons:
+### 🚀 **Proven Scientific Ecosystem**  
+- **NumPy, Pandas, Matplotlib:** Data manipulation and visualization.  
+- **TensorFlow, Scikit-Learn:** Industry-standard ML frameworks.  
 
-1. It's the language most ML practitioners know and love. Want to add your custom sentiment analysis model? It's just another import.
+### 🔗 **Seamless Integration & Modularity**  
+- **APIs & Web Tools:** FastAPI, Flask.  
+- **Blockchain Tools:** Web3.py.  
+- **Automation:** Simple scripting with minimal code.  
 
-2. The Python ecosystem is incredible. Need to analyze data? Pandas. Want to add machine learning? PyTorch or TensorFlow. Need to scale? FastAPI or Ray.
+### 🌍 **Massive Adoption & Community**  
+- **450,000+** libraries available via `pip`.  
+- **#1** language in TIOBE Index (2024).  
+- **10M+** developers worldwide.  
 
-3. Most Web3 infrastructure tools have great Python support. Whether you're interacting with nodes, indexers, or APIs, there's probably a Python SDK.
+### 🎯 **Why It Matters for Us?**  
+- **Plug-and-play tools** for faster development.  
+- **Scalable and efficient** for data-intensive tasks.  
+- **Minimal setup, maximum flexibility.**  
 
-## Roadmap
+Python ensures our platform is **powerful, adaptable, and ready for innovation.**  
 
-### Q2 2025: Power Tools
-- MEV protection suite: Keep your agents' transactions safe
-- Cross-chain arbitrage toolkit: Find opportunities across 20+ chains
-- Advanced governance automation: Proposal analysis, voting strategies, delegate management
+## 🚀 Upcoming Features: Building the Ultimate AI Agent Framework  
 
-### Q3 2025: Going Pro
-- Private pool trading: Execute trades without frontrunning
-- Validator management suite: Run validators across multiple networks
-- DAO coordination framework: Manage complex governance operations
+We are developing a **universal AI agent framework** where agents can access **powerful tools** and intelligently use them to complete complex tasks. These agents will be capable of **reasoning, planning, and executing autonomously**, with initial focus areas in **DeFi** and **DeSci**, before expanding into DAOs and the broader Web3 ecosystem.  
 
-### Q4 2025: Next Level
-- ZK-proof integration: Privacy-preserving agent operations
-- Advanced liquidity optimization: ML-powered liquidity management
-- Multi-agent coordination: Create agent networks that work together
+☐ Develop **DeFAI tools** for market data fetching, smart contract interaction, and portfolio automation.  
+☐ Develop **DeScAI tools** for data labeling, research validation, and decentralized knowledge synthesis.  
+☐ Build an **intelligence layer** that breaks tasks into step-by-step execution plans.  
+☐ Release a **Python SDK** for developers to build with.  
+☐ Develop **DAO tools** for proposal monitoring, treasury management, and sentiment analysis.  
+☐ Enable **cross-chain support** for Ethereum, Polygon, Arbitrum, Optimism, and Solana.  
+☐ Launch a **drag-and-drop no-code interface** for agent creation and testing.  
+☐ Integrate **real-time memory** using vector and temporal databases for long-term context retention.  
+☐ Expand **decentralized storage & compute** with IPFS, Arweave, and Akash.  
+☐ Build **autonomous agents** capable of multi-agent collaboration and self-improvement.  
+☐ Launch **onchain governance** with token incentives for tool creation and platform contributions.  
+☐ Create a **self-sustaining, community-driven agent ecosystem**.  
 
 ## Contributing
 
