@@ -267,7 +267,6 @@ class AgentRunner:
         """Call GPT API with function calling capability."""
         try:
             logger.info(f"Sending messages to GPT: {json.dumps(messages, indent=2)}")
-
             # Initial API call with tools
             completion = self.client.chat.completions.create(
                 model="gpt-4o-mini",
@@ -349,7 +348,8 @@ class AgentRunner:
                 # Get final response after tool calls
                 final_completion = self.client.chat.completions.create(
                     model="gpt-4o-mini",
-                    messages=messages
+                    messages=messages,
+                    tools=self.function_schemas
                 )
                 final_message = final_completion.choices[0].message
                 logger.info(f"Final GPT Response: {final_message.content if final_message.content else 'No content'}")
