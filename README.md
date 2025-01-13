@@ -33,7 +33,7 @@ pip install aizen-agents
 
 ## Quick Start
 
-## Users
+### Users
 
 1. Create `.env` file and fill in your OPENAI_API_KEY (Other values are optional depending on agent config)
 ```
@@ -67,7 +67,7 @@ agent = AgentRunner(config=NEWS_AGENT_CONFIG, max_gpt_calls=5)
 agent.run()
 ```
 
-## Contributors
+### Contributors
 
 1. Clone the repo: `git clone https://github.com/redaicodes/aizen.git`
 2. Navigate to the repo: `cd aizen`
