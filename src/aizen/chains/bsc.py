@@ -102,9 +102,13 @@ class BscClient:
             
             # Send transaction
             tx_hash = self.w3.eth.send_raw_transaction(signed_txn.raw_transaction)
+            tx_hash = f"0x{tx_hash.hex()}"
             
-            self.logger.info(f"Transfer sent: {tx_hash.hex()}")
-            return tx_hash.hex()
+            self.logger.info(f"Transfer sent: {tx_hash}")
+            # Wait until the transaction is mined
+            receipt = self.w3.eth.wait_for_transaction_receipt(tx_hash)
+            self.logger.info(f"Transaction mined: {tx_hash}")
+            return tx_hash
 
         except Exception as e:
             self.logger.error(f"Transfer failed: {str(e)}")
@@ -237,9 +241,13 @@ class BscClient:
             # Sign and send transaction
             signed_txn = self.account.sign_transaction(transaction)
             tx_hash = self.w3.eth.send_raw_transaction(signed_txn.raw_transaction)
+            tx_hash = f"0x{tx_hash.hex()}"
             
-            self.logger.info(f"Token transfer sent: {tx_hash.hex()}")
-            return f"0x{tx_hash.hex()}"
+            self.logger.info(f"Token transfer sent: {tx_hash}")
+            # Wait until the transaction is mined
+            receipt = self.w3.eth.wait_for_transaction_receipt(tx_hash)
+            self.logger.info(f"Transaction mined: {tx_hash}")
+            return tx_hash
 
         except Exception as e:
             self.logger.error(f"Token transfer failed: {str(e)}")
@@ -265,7 +273,7 @@ class BscClient:
         if from_token_symbol != 'bnb':
             approve_hash = self.pancake_v2.approve_swap_token(from_token_symbol, amount)
             # Wait until the transaction is mined
-            approve_receipt = self.pancake_v2.w3.eth.wait_for_transaction_receipt(approve_hash)
+            approve_receipt = self.w3.eth.wait_for_transaction_receipt(approve_hash)
 
         if from_token_symbol == 'bnb':
             swap_hash = self.pancake_v2.swap_exact_bnb_for_tokens(amount, to_token_symbol, slippage)
@@ -273,4 +281,7 @@ class BscClient:
             swap_hash = self.pancake_v2.swap_exact_tokens_for_bnb(from_token_symbol, amount, slippage)
         else:
             swap_hash = self.pancake_v2.swap_exact_tokens_for_tokens(from_token_symbol, to_token_symbol, amount, slippage)
+        # Wait until the transaction is mined
+        receipt = self.w3.eth.wait_for_transaction_receipt(swap_hash)
+        self.logger.info(f"Transaction mined: {swap_hash}")
         return swap_hash
