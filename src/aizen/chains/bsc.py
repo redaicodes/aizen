@@ -77,6 +77,8 @@ class BscClient:
         if not self.account:
             raise ValueError("No wallet imported")
 
+        to_address = Web3.to_checksum_address(to_address)
+
         # Validate address
         if not WalletUtils.validate_ethereum_address(to_address):
             raise ValueError("Invalid address")
@@ -114,6 +116,8 @@ class BscClient:
             raise ValueError("No address provided or wallet imported")
             
         target_address = address or self.account.address
+        token_address = Web3.to_checksum_address(token_address)
+        target_address = Web3.to_checksum_address(target_address)
         
         # ERC20 minimal ABI
         erc20_abi = [
@@ -184,6 +188,9 @@ class BscClient:
         """
         if not self.account:
             raise ValueError("No wallet imported")
+
+        token_address = Web3.to_checksum_address(token_address)
+        to_address = Web3.to_checksum_address(to_address)
 
         # ERC20 transfer ABI
         erc20_abi = [
