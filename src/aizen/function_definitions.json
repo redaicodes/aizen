@@ -11,9 +11,7 @@
                     "description": "HTML content of the news page"
                 }
             },
-            "required": [
-                "content"
-            ],
+            "required": ["content"],
             "additionalProperties": false
         },
         "async": false
@@ -47,9 +45,7 @@
                     "description": "URL to fetch content from"
                 }
             },
-            "required": [
-                "url"
-            ],
+            "required": ["url"],
             "additionalProperties": false
         },
         "async": false
@@ -66,9 +62,7 @@
                     "description": "HTML content of the news page"
                 }
             },
-            "required": [
-                "content"
-            ],
+            "required": ["content"],
             "additionalProperties": false
         },
         "async": false
@@ -102,9 +96,7 @@
                     "description": "URL to fetch content from"
                 }
             },
-            "required": [
-                "url"
-            ],
+            "required": ["url"],
             "additionalProperties": false
         },
         "async": false
@@ -133,9 +125,7 @@
                     "description": "Content of the tweet to post"
                 }
             },
-            "required": [
-                "text"
-            ],
+            "required": ["text"],
             "additionalProperties": false
         },
         "async": true
@@ -156,10 +146,7 @@
                     "description": "Content of the reply tweet"
                 }
             },
-            "required": [
-                "tweet_id",
-                "text"
-            ],
+            "required": ["tweet_id", "text"],
             "additionalProperties": false
         },
         "async": true
@@ -175,15 +162,16 @@
                     "type": "string",
                     "description": "ID of the tweet to quote"
                 },
+                "username": {
+                    "type": "string",
+                    "description": "Twitter username of the original tweet author"
+                },
                 "text": {
                     "type": "string",
                     "description": "Text to add to the quote tweet"
                 }
             },
-            "required": [
-                "tweet_id",
-                "text"
-            ],
+            "required": ["tweet_id", "text"],
             "additionalProperties": false
         },
         "async": true
@@ -208,9 +196,7 @@
                     "description": "Maximum number of tweets to return"
                 }
             },
-            "required": [
-                "query"
-            ],
+            "required": ["query"],
             "additionalProperties": false
         },
         "async": true
@@ -235,9 +221,7 @@
                     "description": "Maximum number of tweets to return"
                 }
             },
-            "required": [
-                "user_id"
-            ],
+            "required": ["user_id"],
             "additionalProperties": false
         },
         "async": true
@@ -286,10 +270,7 @@
                     "description": "Amount in BNB in human-readable decimal format (e.g. 0.001 for 0.001 BNB). Will be converted to base units internally based on token decimals."
                 }
             },
-            "required": [
-                "to_address",
-                "amount"
-            ],
+            "required": ["to_address", "amount"],
             "additionalProperties": false
         },
         "async": false
@@ -308,9 +289,7 @@
                     "type": "string"
                 }
             },
-            "required": [
-                "token_address"
-            ],
+            "required": ["token_address"],
             "additionalProperties": false
         },
         "async": false
@@ -335,11 +314,7 @@
                     "description": "Amount of tokens in human-readable decimal format (e.g. 0.001 for 0.001 USDT). Will be converted to base units internally based on token decimals."
                 }
             },
-            "required": [
-                "token_address",
-                "to_address",
-                "amount"
-            ],
+            "required": ["token_address", "to_address", "amount"],
             "additionalProperties": false
         },
         "async": false
@@ -368,11 +343,7 @@
                     "description": "Slippage tolerance percent"
                 }
             },
-            "required": [
-                "from_token_symbol",
-                "to_token_symbol",
-                "amount"
-            ],
+            "required": ["from_token_symbol", "to_token_symbol", "amount"],
             "additionalProperties": false
         },
         "async": false

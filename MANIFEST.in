@@ -1,0 +1,3 @@
+include src/aizen/agents/configs/*.json
+include README.md
+include LICENSE

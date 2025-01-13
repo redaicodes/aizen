@@ -132,10 +132,8 @@ class TwitterClient:
         """
         try:
             tweet = await self.client.create_tweet(text=text)
-            result = await self.client.get_tweet_by_id(str(tweet))
-            self.logger.info(f"Tweet posted successfully with ID: {tweet}")
-            return format_tweet_object(result)
-            return
+            self.logger.info(f"Tweet posted successfully with ID: {tweet.id}")
+            return tweet
             
         except Exception as e:
             self.logger.error(f"Error posting tweet: {str(e)}")
@@ -161,20 +159,20 @@ class TwitterClient:
                 text=text,
                 reply_to=tweet_id
             )
-            result = await self.client.get_tweet_by_id(str(tweet))
-            self.logger.info(f"Reply posted successfully to tweet {tweet_id}")
-            return format_tweet_object(result)
+            self.logger.info(f"Reply tweet posted successfully for tweet {tweet.id}")
+            return tweet
             
         except Exception as e:
             self.logger.error(f"Error posting reply: {str(e)}")
             raise
 
-    async def quote_tweet(self, tweet_id: str, text: str) -> Dict:
+    async def quote_tweet(self, tweet_id: str, username: str, text: str) -> Dict:
         """
         Quote an existing tweet with additional text.
         
         Args:
             tweet_id (str): ID of the tweet to quote
+            username (str): Twitter username of the original tweet author
             text (str): Text to add to the quote tweet
         
         Returns:
@@ -185,13 +183,16 @@ class TwitterClient:
             Exception: If quote tweet posting fails
         """
         try:
+            # Construct the tweet URL from the ID
+            tweet_url = f"https://twitter.com/{username}/status/{tweet_id}"
+            
             tweet = await self.client.create_tweet(
                 text=text,
-                quote_tweet_id=tweet_id
+                attachment_url=tweet_url
             )
-            result = await self.client.get_tweet_by_id(str(tweet))
-            self.logger.info(f"Quote tweet posted successfully for tweet {tweet_id}")
-            return format_tweet_object(result)
+            print(tweet)
+            self.logger.info(f"Quote tweet posted successfully for tweet {tweet.id}")
+            return tweet
             
         except Exception as e:
             self.logger.error(f"Error posting quote tweet: {str(e)}")
