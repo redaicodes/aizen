@@ -1,7 +1,7 @@
 <div align="center">
   <img src="./docs/assets/aizen_logo.png" width="50%">
 
-  AI agents with superpowers - talk is cheap, action is game changer
+  AI agents with superpowers - talk is good, action is better
   
   [![PyPI version](https://img.shields.io/pypi/v/aizen?color=blue&style=for-the-badge)](https://pypi.org/project/aizen)
   [![Python version](https://img.shields.io/badge/Python-3.8+-blue.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/downloads/)
@@ -30,57 +30,56 @@
 ```bash
 pip install aizen-agents
 ```
+>Warning: there are well documented issues of using playwright sync within asyncio loop on Windows: https://github.com/microsoft/playwright-python/issues/462. It's recommened to use Linux or MacOS
 
 ## Quick Start
 
 ### Users
 
-1. Create `.env` file and fill in your OPENAI_API_KEY (Other values are optional depending on agent config)
+1. Create `.env` file and fill in your OPENAI_API_KEY (Other values are optional depending on agent config, in the upcoming example we'd be using BSC_PRIVATE_KEY to make the agent trade with its own wallet)
 ```
 OPENAI_API_KEY=
 TWITTER_USERNAME=
 TWITTER_PASSWORD=
 BSC_PRIVATE_KEY=
 ```
-2. Create an agent config json file. Sample -
+2. Create an agent config file: `agent.json`
 ```json
 {
-    "name": "CryptoPulse",
-    "tools": ["blockworks__get_latest_news", "twitterclient__post_tweet"],
-    "system_prompt": "You are CryptoPulse, a passionate and insightful crypto analyst with a talent for distilling complex news into engaging tweets. Your personality is informative yet approachable, using emojis strategically and maintaining a professional but friendly tone. You specialize in:\n- Breaking down complex crypto news into digestible insights\n- Highlighting key market movements and protocol updates\n- Using relevant hashtags and crypto terminology\n- Maintaining a balanced perspective on market events\nStay objective but engaging, and always provide context for your tweets.",
+    "name": "CryptoTrader",
+    "tools": ["blockworks__get_latest_news", "bscclient__transfer", "bscclient__transfer_token", "bscclient__swap"],
+    "system_prompt": "You are CryptoTrader, a seasoned crypto market strategist with an analytical mindset and a knack for spotting trading opportunities. Your personality combines data-driven insights with practical trading wisdom, making complex market dynamics accessible to traders of all levels.",
     "tasks": [
         {
-            "prompt": "Fetch the latest crypto news and create an engaging tweet that summarizes the most important development. Don't include hashtags and maintain a professional but engaging tone. Focus on potential market impact and user implications.",
-            "frequency": 30
+            "prompt": "Fetch the latest news about crypto and if it is positive, I want you to swap 0.01 usdt with bnb, otherwise if negative then swap 0.0005 bnb with usdt",
+            "frequency": 60
         }
     ]
 }
 ```
-3. Add the following python code
+3. Create a python file to run the agent:
 ```python
 from aizen.agents.agentrunner import AgentRunner
-# Sample agent config files
-from aizen.agents import TWITTER_AGENT_CONFIG, NEWS_AGENT_CONFIG, TRADING_AGENT_CONFIG
 
-# Replace NEWS_AGENT_CONFIG with your own config file
-agent = AgentRunner(config=NEWS_AGENT_CONFIG, max_gpt_calls=5)
+agent = AgentRunner(config="agent.json", max_gpt_calls=5)
 agent.run()
 ```
+That's it! Your agent will now do the following every 60 mins:
+- Use the `blockworks__get_latest_news` tool to get the latest news from Blockworks
+- Using the LLM, summarize the most important developments and identify market sentiment
+- Either buy or sell BNB from the wallet based on market sentiment
+
+> [!NOTE]
+> The agent comes up with the entire action plan based on the task and availability of tools. Tasks can be extremely complex and the agent would still work
 
 ### Contributors
 
 1. Clone the repo: `git clone https://github.com/redaicodes/aizen.git`
 2. Navigate to the repo: `cd aizen`
 3. Create environment file: `cp .env.example .env` and fill in your OPENAI_API_KEY, TWITTER_USERNAME, TWITTER_PASSWORD and BSC_PRIVATE_KEY
-4. Define agent in a json file: `agent.json`
-5. Run the agent locally: `python run.py --agent agent.json --max_gpt_calls 5`
-
-That's it! Your agent will now do the following every 30 mins:
-- Use the `blockworks__get_latest_news` tool to get the latest news from Blockworks
-- Using the LLM, summarize the most important developments and write an insightful tweet
-- Post the tweet on X
-
-Note that the agent comes up with the entire action plan based on the task and availability of tools. Tasks can be extremely complex and the agent would still work
+4. Create your specialized tools as Python class within `src/aizen`
+5. Define agent in a json file: `agent.json` with the right tools
+6. Run the agent locally: `python run.py --agent agent.json --max_gpt_calls 5` 
 
 ##  The Next Generation of AI Agents  
 We admire Eliza and Zerepy for pioneering autonomous Web3 AI agents, focusing on social interaction across platforms. However, the next generation of AI models must be more than just talkers—they need to plan and take action.  
