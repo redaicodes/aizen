@@ -176,12 +176,12 @@ class BscClient:
         amount: float
     ) -> str:
         """
-        Transfer ERC20 tokens.
+        Transfer ERC20 tokens on Binance Smart Chain. The amount should be in human-readable decimal format (e.g. 0.001 for 0.001 USDT) - the function will handle conversion to token base units internally.
         
         Args:
             token_address: Token contract address
             to_address: Recipient address
-            amount: Amount of tokens
+            amount: Amount of tokens in human-readable decimal format (e.g. 0.001 for 0.001 USDT). Will be converted to base units internally based on token decimals.
             
         Returns:
             Transaction hash

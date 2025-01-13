@@ -151,7 +151,7 @@ class Blockworks():
             )
 
             page = context.new_page()
-            page.set_default_timeout(120000)  # 120 second timeout
+            page.set_default_timeout(30000)  # 120 second timeout
 
             try:
                 self.logger.info(f"Navigating to {url}")
