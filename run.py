@@ -202,7 +202,7 @@ class AgentRunner:
             'blockworks': 'aizen.data.news.blockworks.Blockworks',
             'theblock': 'aizen.data.news.theblock.TheBlock',
             'twitterclient': 'aizen.social.twitterclient.TwitterClient',
-            'bscclient': 'aizen.chains.bsc'
+            'bscclient': 'aizen.chains.bsc.BscClient'
         }
 
         # Load function definitions

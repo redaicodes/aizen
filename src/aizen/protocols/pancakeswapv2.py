@@ -1,24 +1,15 @@
+from web3 import Web3, AsyncWeb3
+from eth_account import Account
+from typing import Dict, Optional
 import logging
-from web3 import Web3
-from eth_account.account import Account
 from decimal import Decimal
 
-class PancakeSwapClient:
-    """
-    A simple PancakeSwap V2 client for Binance Smart Chain (BSC).
-    Demonstrates:
-      - Connecting to BSC
-      - Checking token prices via getAmountsOut
-      - Approving tokens
-      - Swapping tokens (BNB <-> USDT, USDT <-> BUSD, etc.)
-    """
+class PancakeSwapV2:
 
     # PancakeSwap V2 Router Address on BSC Mainnet
     PANCAKE_V2_ROUTER = "0x10ED43C718714eb63d5aA57B78B54704E256024E"
-
     # Wrapped BNB (WBNB) address on BSC
     WBNB_ADDRESS = "0xBB4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c"
-
     # Dictionary of common tokens you want to support
     TOKEN_DICT = {
         "wbnb": {
@@ -36,41 +27,26 @@ class PancakeSwapClient:
         "busd": {
             "address": "0xe9e7cea3dedca5984780bafc599bd69add087d56",
             "decimals": 18
-        }
+        },
         "cake": {
             "address": "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82",
             "decimals": 18
         }
     }
 
-    def __init__(self, bsc_client, log_level=logging.INFO):
+    def __init__(self, w3, account, logger):
         """
-        Initialize the PancakeSwap client with:
-          - bsc_client: a BSC client object that has rpc_url and account
-          - Optional custom log_level
+        Initialize.
         """
-        self.logger = logging.getLogger('PancakeSwapClient')
-        self.logger.setLevel(log_level)
-
-        # Console handler for logging
-        ch = logging.StreamHandler()
-        ch.setLevel(log_level)
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        ch.setFormatter(formatter)
-        self.logger.addHandler(ch)
-
-        # Web3 connection to BSC
-        self.w3 = Web3(Web3.HTTPProvider(bsc_client.rpc_url))
-        self.logger.info(f"Connected to BSC: {self.w3.is_connected()}")
-
-        # Set the account (if private key is provided in bsc_client)
-        self.account = bsc_client.account
-
+        self.w3 = w3
+        self.account = account
+        self.logger = logger
         # Load PancakeSwap Router contract
         self.router_contract = self.w3.eth.contract(
             address=self.w3.to_checksum_address(self.PANCAKE_V2_ROUTER),
             abi=self._load_router_abi()
         )
+
 
     def _load_router_abi(self):
         """
@@ -183,13 +159,13 @@ class PancakeSwapClient:
         bnb_received_wei = amounts_out[-1]
 
         # Convert from Wei to BNB
-        bnb_price = float(self.w3.fromWei(bnb_received_wei, 'ether'))
+        bnb_price = float(self.w3.from_wei(bnb_received_wei, 'ether'))
         self.logger.info(
             f"Price for {amount_in_units} {token_symbol.upper()}: ~{bnb_price} BNB"
         )
         return bnb_price
 
-    def approve_token(self, token_symbol: str, spender: str, amount_in_units: float):
+    def approve_swap_token(self, token_symbol: str, amount_in_units: float):
         """
         Approve `spender` to use `amount_in_units` of `token_symbol` on behalf of self.account.
         Typically required before swapping tokens.
@@ -202,7 +178,8 @@ class PancakeSwapClient:
         token_address = token_info["address"]
         decimals = token_info["decimals"]
 
-        amount_wei = int(Decimal(amount_in_units) * Decimal(10 ** decimals))
+        # Extra approve buffer to avoid precision issues
+        amount_wei = int(Decimal(amount_in_units * 1.001) * Decimal(10 ** decimals))
 
         # Minimal ERC20 ABI for approval
         abi_erc20_approve = [
@@ -227,7 +204,7 @@ class PancakeSwapClient:
 
         nonce = self.w3.eth.get_transaction_count(self.account.address)
         tx = token_contract.functions.approve(
-            self.w3.to_checksum_address(spender),
+            self.w3.to_checksum_address(self.PANCAKE_V2_ROUTER),
             amount_wei
         ).build_transaction({
             'from': self.account.address,
@@ -237,11 +214,11 @@ class PancakeSwapClient:
         })
 
         signed_tx = self.w3.eth.account.sign_transaction(tx, self.account.key)
-        tx_hash = self.w3.eth.send_raw_transaction(signed_tx.rawTransaction)
+        tx_hash = self.w3.eth.send_raw_transaction(signed_tx.raw_transaction)
         self.logger.info(f"Approve transaction sent: {tx_hash.hex()}")
-        return tx_hash.hex()
+        return f"0x{tx_hash.hex()}"
 
-    def swap_exact_bnb_for_tokens(self, amount_in_bnb: float, token_out_symbol: str, slippage_tolerance_pct=1.0):
+    def swap_exact_bnb_for_tokens(self, amount_in_bnb: float, token_out_symbol: str, slippage_tolerance_pct=5.0):
         """
         Swap exact BNB for a given token symbol.
         """
@@ -249,7 +226,7 @@ class PancakeSwapClient:
             raise ValueError("No private key/account set up to sign transactions.")
 
         # Convert BNB to Wei
-        amount_in_wei = self.w3.toWei(amount_in_bnb, 'ether')
+        amount_in_wei = self.w3.to_wei(amount_in_bnb, 'ether')
 
         # Get token info
         token_info = self._get_token_info(token_out_symbol)
@@ -282,11 +259,11 @@ class PancakeSwapClient:
         })
 
         signed_tx = self.w3.eth.account.sign_transaction(swap_txn, self.account.key)
-        tx_hash = self.w3.eth.send_raw_transaction(signed_tx.rawTransaction)
+        tx_hash = self.w3.eth.send_raw_transaction(signed_tx.raw_transaction)
         self.logger.info(f"Swap BNB -> {token_out_symbol.upper()} TX sent: {tx_hash.hex()}")
-        return tx_hash.hex()
+        return f"0x{tx_hash.hex()}"
 
-    def swap_exact_tokens_for_bnb(self, token_in_symbol: str, amount_in_units: float, slippage_tolerance_pct=10.0):
+    def swap_exact_tokens_for_bnb(self, token_in_symbol: str, amount_in_units: float, slippage_tolerance_pct=5.0):
         """
         Swap exact tokens (e.g., USDT, ETH(BEP-20)) for BNB.
         """
@@ -326,16 +303,16 @@ class PancakeSwapClient:
         })
 
         signed_tx = self.w3.eth.account.sign_transaction(swap_txn, self.account.key)
-        tx_hash = self.w3.eth.send_raw_transaction(signed_tx.rawTransaction)
+        tx_hash = self.w3.eth.send_raw_transaction(signed_tx.raw_transaction)
         self.logger.info(f"Swap {token_in_symbol.upper()} -> BNB TX sent: {tx_hash.hex()}")
-        return tx_hash.hex()
+        return f"0x{tx_hash.hex()}"
 
     def swap_exact_tokens_for_tokens(
         self,
         token_in_symbol: str,
         token_out_symbol: str,
         amount_in_units: float,
-        slippage_tolerance_pct=1.0
+        slippage_tolerance_pct=5.0
     ):
         """
         Swap exact tokens (e.g., USDT -> BUSD, ETH(BEP-20) -> BUSD, etc.).
@@ -358,7 +335,7 @@ class PancakeSwapClient:
         # Common path on BSC is token_in -> WBNB -> token_out
         path = [
             self.w3.to_checksum_address(token_in_address),
-            self.w3.to_checksum_address(self.WBNB_ADDRESS),
+            # self.w3.to_checksum_address(self.WBNB_ADDRESS),
             self.w3.to_checksum_address(token_out_address)
         ]
 
@@ -382,8 +359,8 @@ class PancakeSwapClient:
         })
 
         signed_tx = self.w3.eth.account.sign_transaction(swap_txn, self.account.key)
-        tx_hash = self.w3.eth.send_raw_transaction(signed_tx.rawTransaction)
+        tx_hash = self.w3.eth.send_raw_transaction(signed_tx.raw_transaction)
         self.logger.info(
             f"Swap {token_in_symbol.upper()} -> {token_out_symbol.upper()} TX sent: {tx_hash.hex()}"
         )
-        return tx_hash.hex()
+        return f"0x{tx_hash.hex()}"

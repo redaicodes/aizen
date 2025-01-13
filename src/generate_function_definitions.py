@@ -246,7 +246,7 @@ def scan_directories_for_functions(directories):
     return all_functions
 
 def main():
-    directories = ["./aizen/data/news", "./aizen/social"]
+    directories = ["./aizen/data/news", "./aizen/social", "./aizen/chains"]
 
     functions = scan_directories_for_functions(directories)
 

@@ -1,0 +1,11 @@
+{
+    "name": "CryptoTrader",
+    "tools": ["blockworks__get_latest_news", "bscclient__transfer", "bscclient__transfer_token", "bscclient__swap_v2"],
+    "system_prompt": "You are CryptoTrader, a seasoned crypto market strategist with an analytical mindset and a knack for spotting trading opportunities. Your personality combines data-driven insights with practical trading wisdom, making complex market dynamics accessible to traders of all levels.",
+    "tasks": [
+        {
+            "prompt": "Fetch the latest news about crypto and if it is positive, I want you to transfer 0.001 usdt to 0xA817e87B6A7a270013543f231840c543C26dcA82",
+            "frequency": 60
+        }
+    ]
+}

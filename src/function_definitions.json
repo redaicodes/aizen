@@ -241,5 +241,80 @@
             "additionalProperties": false
         },
         "async": true
+    },
+    {
+        "name": "bscclient__transfer",
+        "description": "Transfer BNB to address on Binance Smart Chain.\n\nReturns: Transaction hash",
+        "strict": false,
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "to_address": {
+                    "type": "string",
+                    "description": "Recipient address"
+                },
+                "amount": {
+                    "type": "number",
+                    "description": "Amount in BNB"
+                }
+            },
+            "required": ["to_address", "amount"],
+            "additionalProperties": false
+        },
+        "async": false
+    },
+    {
+        "name": "bscclient__transfer_token",
+        "description": "Transfer ERC20 tokens on Binance Smart Chain.\n\nReturns: Transaction hash",
+        "strict": false,
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "token_address": {
+                    "type": "string",
+                    "description": "Token contract address"
+                },
+                "to_address": {
+                    "type": "string",
+                    "description": "Recipient address"
+                },
+                "amount": {
+                    "type": "number",
+                    "description": "Amount of tokens"
+                }
+            },
+            "required": ["token_address", "to_address", "amount"],
+            "additionalProperties": false
+        },
+        "async": false
+    },
+    {
+        "name": "bscclient__swap_v2",
+        "description": "Trade/Swap tokens on Binance Smart Chain. Allowed symbols are 'bnb', 'usdt', 'busd', 'eth', 'cake'.\n\nReturns: Transaction hash",
+        "strict": false,
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "from_token_symbol": {
+                    "type": "string",
+                    "description": "Symbol of token to swap from."
+                },
+                "to_token_symbol": {
+                    "type": "string",
+                    "description": "Symbol of token to swap to"
+                },
+                "amount": {
+                    "type": "number",
+                    "description": "Amount of tokens"
+                },
+                "slippage": {
+                    "type": "number",
+                    "description": "Slippage tolerance percent"
+                }
+            },
+            "required": ["from_token_symbol", "to_token_symbol", "amount"],
+            "additionalProperties": false
+        },
+        "async": false
     }
 ]
