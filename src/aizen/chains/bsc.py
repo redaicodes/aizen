@@ -254,9 +254,9 @@ class BscClient:
             raise
 
 
-    def swap_v2(self, from_token_symbol: str, to_token_symbol: str, amount: float, slippage: float = 5.0):
+    def swap(self, from_token_symbol: str, to_token_symbol: str, amount: float, slippage: float = 5.0):
         """
-        Swap tokens. The amount should be in human-readable decimal format (e.g. 0.001 for 0.001 USDT) - the function will handle conversion to token base units internally.
+        Swap/Trade tokens. The amount should be in human-readable decimal format (e.g. 0.001 for 0.001 USDT) - the function will handle conversion to token base units internally.
         
         Args:
             from_token_symbol (str): Symbol of token to swap from.

@@ -320,8 +320,8 @@
         "async": false
     },
     {
-        "name": "bscclient__swap_v2",
-        "description": "Swap tokens. The amount should be in human-readable decimal format (e.g. 0.001 for 0.001 USDT) - the function will handle conversion to token base units internally.\n\nReturns: Transaction hash",
+        "name": "bscclient__swap",
+        "description": "Swap/Trade tokens. The amount should be in human-readable decimal format (e.g. 0.001 for 0.001 USDT) - the function will handle conversion to token base units internally.\n\nReturns: Transaction hash",
         "strict": false,
         "parameters": {
             "type": "object",

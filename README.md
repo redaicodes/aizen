@@ -31,14 +31,18 @@
 pip install aizen-agents
 ```
 
-Need help? Check out our [installation guide](https://docs.aizen.io/installation).
-
 ## Quick Start
 
-1. Clone the repo: `git clone https://github.com/redaicodes/aizen.git`
-2. Navigate to the repo: `cd aizen`
-3. Create environment file: `cp .env.example .env` and fill in your OPENAI_API_KEY, TWITTER_USERNAME and TWITTER_PASSWORD
-5. Define agent in a json file: `agent.json`
+## Users
+
+1. Create `.env` file and fill in your OPENAI_API_KEY (Other values are optional depending on agent config)
+```
+OPENAI_API_KEY=
+TWITTER_USERNAME=
+TWITTER_PASSWORD=
+BSC_PRIVATE_KEY=
+```
+2. Create an agent config json file. Sample -
 ```json
 {
     "name": "CryptoPulse",
@@ -52,7 +56,24 @@ Need help? Check out our [installation guide](https://docs.aizen.io/installation
     ]
 }
 ```
-4. Run the agent locally: `python run.py —agent agent.json`
+3. Add the following python code
+```python
+from aizen.agents.agentrunner import AgentRunner
+# Sample agent config files
+from aizen.agents import TWITTER_AGENT_CONFIG, NEWS_AGENT_CONFIG, TRADING_AGENT_CONFIG
+
+# Replace NEWS_AGENT_CONFIG with your own config file
+agent = AgentRunner(config=NEWS_AGENT_CONFIG, max_gpt_calls=5)
+agent.run()
+```
+
+## Contributors
+
+1. Clone the repo: `git clone https://github.com/redaicodes/aizen.git`
+2. Navigate to the repo: `cd aizen`
+3. Create environment file: `cp .env.example .env` and fill in your OPENAI_API_KEY, TWITTER_USERNAME, TWITTER_PASSWORD and BSC_PRIVATE_KEY
+4. Define agent in a json file: `agent.json`
+5. Run the agent locally: `python run.py --agent agent.json --max_gpt_calls 5`
 
 That's it! Your agent will now do the following every 30 mins:
 - Use the `blockworks__get_latest_news` tool to get the latest news from Blockworks
