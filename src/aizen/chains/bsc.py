@@ -51,7 +51,7 @@ class BscClient:
         self.logger.info(f"Imported wallet: {wallet['address']}")
         return wallet
 
-    def get_balance(self, address: Optional[str] = None) -> float:
+    def get_balance(self, address: str = "") -> float:
         """Get BNB balance for address."""
         if not address and not self.account:
             raise ValueError("No address provided or wallet imported")
@@ -65,11 +65,11 @@ class BscClient:
 
     def transfer(self, to_address: str, amount: float) -> str:
         """
-        Transfer BNB to address.
+        Transfer BNB to address. The amount should be in human-readable decimal format (e.g. 0.001 for 0.001 BNB) - the function will handle conversion to token base units internally.
         
         Args:
-            to_address: Recipient address
-            amount: Amount in BNB
+            to_address (str): Recipient address
+            amount (float): Amount in BNB in human-readable decimal format (e.g. 0.001 for 0.001 BNB). Will be converted to base units internally based on token decimals.
             
         Returns:
             Transaction hash
@@ -110,7 +110,7 @@ class BscClient:
             self.logger.error(f"Transfer failed: {str(e)}")
             raise
 
-    def get_token_balance(self, token_address: str, address: Optional[str] = None) -> Dict:
+    def get_token_balance(self, token_address: str, address: str = "") -> Dict:
         """Get ERC20 token balance."""
         if not address and not self.account:
             raise ValueError("No address provided or wallet imported")
@@ -179,9 +179,9 @@ class BscClient:
         Transfer ERC20 tokens on Binance Smart Chain. The amount should be in human-readable decimal format (e.g. 0.001 for 0.001 USDT) - the function will handle conversion to token base units internally.
         
         Args:
-            token_address: Token contract address
-            to_address: Recipient address
-            amount: Amount of tokens in human-readable decimal format (e.g. 0.001 for 0.001 USDT). Will be converted to base units internally based on token decimals.
+            token_address (str): Token contract address
+            to_address (str): Recipient address
+            amount (float): Amount of tokens in human-readable decimal format (e.g. 0.001 for 0.001 USDT). Will be converted to base units internally based on token decimals.
             
         Returns:
             Transaction hash
@@ -248,13 +248,13 @@ class BscClient:
 
     def swap_v2(self, from_token_symbol: str, to_token_symbol: str, amount: float, slippage: float = 5.0):
         """
-        Swap tokens.
+        Swap tokens. The amount should be in human-readable decimal format (e.g. 0.001 for 0.001 USDT) - the function will handle conversion to token base units internally.
         
         Args:
-            from_token_symbol: Symbol of token to swap from.
-            to_token_symbol: Symbol of token to swap to
-            amount: Amount of tokens
-            slippage: Slippage tolerance percent
+            from_token_symbol (str): Symbol of token to swap from.
+            to_token_symbol (str): Symbol of token to swap to
+            amount (float): Amount of tokens in human-readable decimal format (e.g. 0.001 for 0.001 USDT). Will be converted to base units internally based on token decimals.
+            slippage (float): Slippage tolerance percent
             
         Returns:
             Transaction hash

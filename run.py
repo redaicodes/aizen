@@ -86,13 +86,13 @@ class ToolWrapper:
         return wrapper
 
 class AgentRunner:
-    def __init__(self, config_path: str):
+    def __init__(self, config_path: str, max_gpt_calls: int):
         self.config_path = config_path
         self.config = self._load_config()
         self.tool_instances = {}
         self.tools = {}
         self.chat_history = []
-        self.max_gpt_calls = self.config.get('max_gpt_calls', DEFAULT_MAX_GPT_CALLS)
+        self.max_gpt_calls = max_gpt_calls
         
         # Initialize OpenAI client
         self.client = OpenAI()
@@ -400,11 +400,13 @@ def main():
     parser = argparse.ArgumentParser(description='Run an AI agent with specified configuration')
     parser.add_argument('--agent', type=str, default=DEFAULT_AGENT_CONFIG_PATH,
                       help='Path to agent configuration file')
+    parser.add_argument('--max_gpt_calls', type=int, default=DEFAULT_MAX_GPT_CALLS,
+                      help='Max GPT calls for a particular task')
     args = parser.parse_args()
     
     try:
         # Create and run agent
-        agent = AgentRunner(args.agent)
+        agent = AgentRunner(args.agent, args.max_gpt_calls)
         agent.run()
     except KeyboardInterrupt:
         logger.info("Shutting down agent...")

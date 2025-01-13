@@ -11,7 +11,9 @@
                     "description": "HTML content of the news page"
                 }
             },
-            "required": ["content"],
+            "required": [
+                "content"
+            ],
             "additionalProperties": false
         },
         "async": false
@@ -45,7 +47,9 @@
                     "description": "URL to fetch content from"
                 }
             },
-            "required": ["url"],
+            "required": [
+                "url"
+            ],
             "additionalProperties": false
         },
         "async": false
@@ -62,7 +66,9 @@
                     "description": "HTML content of the news page"
                 }
             },
-            "required": ["content"],
+            "required": [
+                "content"
+            ],
             "additionalProperties": false
         },
         "async": false
@@ -96,10 +102,24 @@
                     "description": "URL to fetch content from"
                 }
             },
-            "required": ["url"],
+            "required": [
+                "url"
+            ],
             "additionalProperties": false
         },
         "async": false
+    },
+    {
+        "name": "twitterclient___async_init",
+        "description": "Async initialization for the client.\n\nReturns: ",
+        "strict": false,
+        "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+        },
+        "async": true
     },
     {
         "name": "twitterclient__post_tweet",
@@ -113,7 +133,9 @@
                     "description": "Content of the tweet to post"
                 }
             },
-            "required": ["text"],
+            "required": [
+                "text"
+            ],
             "additionalProperties": false
         },
         "async": true
@@ -134,7 +156,10 @@
                     "description": "Content of the reply tweet"
                 }
             },
-            "required": ["tweet_id", "text"],
+            "required": [
+                "tweet_id",
+                "text"
+            ],
             "additionalProperties": false
         },
         "async": true
@@ -155,7 +180,10 @@
                     "description": "Text to add to the quote tweet"
                 }
             },
-            "required": ["tweet_id", "text"],
+            "required": [
+                "tweet_id",
+                "text"
+            ],
             "additionalProperties": false
         },
         "async": true
@@ -180,7 +208,9 @@
                     "description": "Maximum number of tweets to return"
                 }
             },
-            "required": ["query"],
+            "required": [
+                "query"
+            ],
             "additionalProperties": false
         },
         "async": true
@@ -205,7 +235,9 @@
                     "description": "Maximum number of tweets to return"
                 }
             },
-            "required": ["user_id"],
+            "required": [
+                "user_id"
+            ],
             "additionalProperties": false
         },
         "async": true
@@ -223,8 +255,24 @@
         "async": true
     },
     {
+        "name": "bscclient__get_balance",
+        "description": "Get BNB balance for address.\n\nReturns: user BNB balance",
+        "strict": false,
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                }
+            },
+            "required": [],
+            "additionalProperties": false
+        },
+        "async": false
+    },
+    {
         "name": "bscclient__transfer",
-        "description": "Transfer BNB to address on Binance Smart Chain.\n\nReturns: Transaction hash",
+        "description": "Transfer BNB to address. The amount should be in human-readable decimal format (e.g. 0.001 for 0.001 BNB) - the function will handle conversion to token base units internally.\n\nReturns: Transaction hash",
         "strict": false,
         "parameters": {
             "type": "object",
@@ -235,10 +283,34 @@
                 },
                 "amount": {
                     "type": "number",
-                    "description": "Amount in BNB"
+                    "description": "Amount in BNB in human-readable decimal format (e.g. 0.001 for 0.001 BNB). Will be converted to base units internally based on token decimals."
                 }
             },
-            "required": ["to_address", "amount"],
+            "required": [
+                "to_address",
+                "amount"
+            ],
+            "additionalProperties": false
+        },
+        "async": false
+    },
+    {
+        "name": "bscclient__get_token_balance",
+        "description": "Get ERC20 token balance.\n\nReturns: ",
+        "strict": false,
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "token_address": {
+                    "type": "string"
+                },
+                "address": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "token_address"
+            ],
             "additionalProperties": false
         },
         "async": false
@@ -263,14 +335,18 @@
                     "description": "Amount of tokens in human-readable decimal format (e.g. 0.001 for 0.001 USDT). Will be converted to base units internally based on token decimals."
                 }
             },
-            "required": ["token_address", "to_address", "amount"],
+            "required": [
+                "token_address",
+                "to_address",
+                "amount"
+            ],
             "additionalProperties": false
         },
         "async": false
     },
     {
         "name": "bscclient__swap_v2",
-        "description": "Trade/Swap tokens on Binance Smart Chain. Allowed symbols are 'bnb', 'usdt', 'busd', 'eth', 'cake'.\n\nReturns: Transaction hash",
+        "description": "Swap tokens. The amount should be in human-readable decimal format (e.g. 0.001 for 0.001 USDT) - the function will handle conversion to token base units internally.\n\nReturns: Transaction hash",
         "strict": false,
         "parameters": {
             "type": "object",
@@ -285,14 +361,18 @@
                 },
                 "amount": {
                     "type": "number",
-                    "description": "Amount of tokens"
+                    "description": "Amount of tokens in human-readable decimal format (e.g. 0.001 for 0.001 USDT). Will be converted to base units internally based on token decimals."
                 },
                 "slippage": {
                     "type": "number",
                     "description": "Slippage tolerance percent"
                 }
             },
-            "required": ["from_token_symbol", "to_token_symbol", "amount"],
+            "required": [
+                "from_token_symbol",
+                "to_token_symbol",
+                "amount"
+            ],
             "additionalProperties": false
         },
         "async": false
