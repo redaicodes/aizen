@@ -22,7 +22,6 @@
 - [Why Python? The Perfect Fit for Our Platform](#why-python-the-perfect-fit-for-our-platform)
 - [Upcoming Features: Building the Ultimate AI Agent Framework](#-upcoming-features-building-the-ultimate-ai-agent-framework)
 - [Contributing](#contributing)
-- [Community](#community)
 - [License](#license)
 
 ## Installation
@@ -270,14 +269,6 @@ We are developing a **universal AI agent framework** where agents can access **p
 ## Contributing
 
 We love contributions! Whether you're fixing bugs, adding features, or improving documentation, check out our [contribution guide](CONTRIBUTING.md).
-
-Want to add a new tool? Check out the [tool creation guide](https://docs.aizen.io/tools/creating).
-
-## Community
-
-- Discord: [Join our community](https://discord.gg/aizen)
-- Twitter: [@AizenProtocol](https://twitter.com/aizenprotocol)
-- Forum: [Discuss ideas](https://forum.aizen.io)
 
 ## License
 
