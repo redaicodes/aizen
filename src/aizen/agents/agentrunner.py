@@ -2,7 +2,7 @@ import asyncio
 import json
 import logging
 import argparse
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Union
 from datetime import datetime
 from importlib import import_module
 from pathlib import Path
@@ -83,9 +83,9 @@ class ToolWrapper:
         return wrapper
 
 class AgentRunner:
-    def __init__(self, config_path: str, max_gpt_calls: int):
-        self.config_path = config_path
-        self.config = self._load_config()
+    def __init__(self, config: Union[str, Dict], max_gpt_calls: int = 5):
+        self.config_path = config if isinstance(config, str) else None
+        self.config = self._load_config_from_path(config) if isinstance(config, str) else self._validate_config(config)  
         self.tool_instances = {}
         self.tools = {}
         self.chat_history = []
@@ -99,26 +99,41 @@ class AgentRunner:
         # Initialize tools
         self._initialize_tools()
         
-    def _load_config(self) -> Dict:
-        """Load and validate agent configuration."""
+    def _load_config_from_path(self, config_path: str) -> Dict:
+        """Load and validate agent configuration from a file."""
         try:
-            with open(self.config_path, 'r') as f:
+            with open(config_path, 'r') as f:
                 config = json.load(f)
-                
+            return self._validate_config(config)
+        except Exception as e:
+            logger.error(f"Error loading config from file: {str(e)}")
+            raise
+
+    def _validate_config(self, config: Dict) -> Dict:
+        """Validate the configuration dictionary."""
+        try:
             # Validate required fields
             required_fields = ['name', 'tools', 'tasks']
-            for field in required_fields:
-                if field not in config:
-                    raise ValueError(f"Missing required field: {field}")
-                    
+            missing_fields = [field for field in required_fields if field not in config]
+            if missing_fields:
+                raise ValueError(f"Missing required fields: {', '.join(missing_fields)}")
+            
+            # Validate types
+            if not isinstance(config['name'], str):
+                raise ValueError("'name' must be a string")
+            if not isinstance(config['tools'], list):
+                raise ValueError("'tools' must be a list")
+            if not isinstance(config['tasks'], list):
+                raise ValueError("'tasks' must be a list")
+            
             # Set default system prompt if not provided
             if 'system_prompt' not in config:
                 config['system_prompt'] = DEFAULT_SYSTEM_PROMPT
-                
+            
             return config
             
         except Exception as e:
-            logger.error(f"Error loading config: {str(e)}")
+            logger.error(f"Error validating config: {str(e)}")
             raise
 
     def _get_class_from_path(self, class_path: str) -> Any:
