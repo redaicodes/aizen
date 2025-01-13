@@ -197,17 +197,14 @@ class AgentRunner:
     def _load_function_definitions(self) -> Dict:
         """Load and parse function definitions from JSON file."""
         try:
-            # Load from ./src/aizen/function_definitions.json
-            definitions_path = Path("./src/aizen/function_definitions.json")
-            with open(definitions_path) as f:
+            from importlib import resources
+            with resources.files('aizen').joinpath('function_definitions.json').open('r') as f:
                 definitions = json.load(f)
-                
-            # Convert to dict for easier lookup
             return {func["name"]: func for func in definitions}
         except Exception as e:
             logger.error(f"Error loading function definitions: {str(e)}")
             raise
-
+        
     def _initialize_tools(self):
         """Initialize tool classes and register their methods."""
         CLASS_MAPPING = {

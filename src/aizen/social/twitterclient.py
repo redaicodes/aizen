@@ -133,7 +133,7 @@ class TwitterClient:
         try:
             tweet = await self.client.create_tweet(text=text)
             self.logger.info(f"Tweet posted successfully with ID: {tweet.id}")
-            return tweet
+            return format_tweet_object(tweet)
             
         except Exception as e:
             self.logger.error(f"Error posting tweet: {str(e)}")
@@ -160,7 +160,7 @@ class TwitterClient:
                 reply_to=tweet_id
             )
             self.logger.info(f"Reply tweet posted successfully for tweet {tweet.id}")
-            return tweet
+            return format_tweet_object(tweet)
             
         except Exception as e:
             self.logger.error(f"Error posting reply: {str(e)}")
@@ -192,7 +192,7 @@ class TwitterClient:
             )
             print(tweet)
             self.logger.info(f"Quote tweet posted successfully for tweet {tweet.id}")
-            return tweet
+            return format_tweet_object(tweet)
             
         except Exception as e:
             self.logger.error(f"Error posting quote tweet: {str(e)}")
