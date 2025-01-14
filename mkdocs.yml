@@ -1,50 +1,66 @@
 site_name: Aizen Documentation
-site_description: Aizen, Autonomous web3 agents with powerful tools and realtime data
-site_url: https://docs.aizen.ai
+site_description: Web3 AI Agent Platform with powerful tools and realtime data
 repo_url: https://github.com/redaicodes/aizen
-repo_name: redaicodes/aizen
-# docs_dir: docs/md_v2
-
-nav:
-  - Home: 'index.md'
-  - 'Installation': 'basic/installation.md'
-  - 'Quick Start': 'basic/quickstart.md'
-  
-  - Basics:
-    - 'What are Tools?': 'basic/what-are-tools.md'
-    - 'Importance of Right Data': 'basic/importance-of-right-data.md'
-    - 'Taking Actions': 'basic/taking-actions.md'
-    
-  - API Reference:
-    - 'agents': 'api/agents.md'
-    - 'data': 'api/data.md'
-    - 'protocols': 'api/protocols.md'
-
-  - Tutorial:
-    - '1. Getting Started': 'tutorial/episode_01_Introduction_to_Crawl4AI_and_Basic_Installation.md'
-    - '2. Advanced Features': 'tutorial/episode_02_Overview_of_Advanced_Features.md'
-    - '3. Browser Setup': 'tutorial/episode_03_Browser_Configurations_&_Headless_Crawling.md'
 
 theme:
-  name: terminal
-  palette: dark
+    name: material
+    palette:
+        scheme: slate
+        primary: teal
+        accent: teal
+    features:
+        - navigation.instant
+        - navigation.tracking
+        - navigation.sections
+        - navigation.tabs
+        - toc.follow
+        - content.code.copy
+    font:
+        text: Roboto Mono
+        code: Roboto Mono
+    icon:
+        logo: material/robot
+        repo: fontawesome/brands/github
+
+nav:
+    - Home: index.md
+    - Getting Started: getting-started.md
+    - Platform: platform.md
+    - Examples: examples.md
+
+plugins:
+    - search
 
 markdown_extensions:
-  - pymdownx.highlight:
-      anchor_linenums: true
-  - pymdownx.inlinehilite
-  - pymdownx.snippets
-  - pymdownx.superfences
-  - admonition
-  - pymdownx.details
-  - attr_list
-  - tables
+    - admonition
+    - pymdownx.details
+    - pymdownx.superfences:
+          custom_fences:
+              - name: mermaid
+                class: mermaid
+                format: !!python/name:pymdownx.superfences.fence_code_format
+    - pymdownx.highlight:
+          anchor_linenums: true
+          line_spans: __span
+          pygments_lang_class: true
+    - pymdownx.inlinehilite
+    - pymdownx.snippets
+    - pymdownx.tasklist:
+          custom_checkbox: true
+    - tables
+    - attr_list
+    - md_in_html
+    - def_list
+    - pymdownx.emoji:
+          emoji_index: !!python/name:material.extensions.emoji.twemoji
+          emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+extra:
+    social:
+        - icon: fontawesome/brands/github
+          link: https://github.com/redaicodes/aizen
+        - icon: fontawesome/brands/twitter
+          link: https://twitter.com/redaicodes
 
 extra_css:
-  - assets/styles.css
-  - assets/highlight.css
-  - assets/dmvendor.css
-
-extra_javascript:
-  - assets/highlight.min.js
-  - assets/highlight_init.js
+    - stylesheets/extra.css
