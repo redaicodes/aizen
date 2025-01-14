@@ -1,67 +1,24 @@
-# Aizen: AI agents with superpowers
+# AI Agents with Superpowers
 
-<div class="grid cards" markdown>
--   :rocket: **Next Generation**
-    
-    The next generation of AI agents that plan and take action
+> Talk is good, action is better
 
--   :tools: **Tool Integration**
+Aizen is the best platform for creating the next generation of smart agents. It's a unified platform empowering both builders and users!
 
-    Extensive protocol integration with DeFi, social platforms, and data sources
+## Platform Goals
 
--   :bar_chart: **Real-Time Data**
+- **For Builders:** Easily create Python-based tools and share them with the community. These tools can be used by agents based on their planning.
+- **For Users:** Launch powerful AI agents using English as your programming language.
 
-    Live market data, sentiment analysis, and on-chain analytics
+## Key Features
 
--   :heart: **Open Source**
+Our library is designed with simplicity, efficiency, and developer experience in mind:
 
-        Built by the community, for the community
+- **Minimal Boilerplate:** Write clean and concise code without unnecessary complexity
+- **Smaller Codebase:** A lean and efficient codebase ensures easier navigation
+- **Minimally Restrictive:** Provides flexibility to adapt and integrate seamlessly
+- **Ease of Use:** Designed for simplicity and rapid learning
+- **Robust Production-Ready Code:** Features ready for deployment
+- **Exceptional Logging:** Advanced logging capabilities for efficient debugging
 
-    </div>
-
-## The Next Generation of AI Agents
-
-We admire Eliza and Zerepy for pioneering autonomous Web3 AI agents, focusing on social interaction across platforms. However, the next generation of AI models must be more than just talkers—they need to plan and take action.
-
-### DeFAI (Decentralized Financial AI)
-
-DeFAI is about making AI active participants in DeFi ecosystems. These agents will:
-
--   Generate yield
--   Manage lending
--   Provide liquidity
--   Optimize strategies for profitable financial participation
-
-Their ability to automate complex financial operations can significantly expand market efficiency and accessibility.
-
-### DeScAI (Decentralized Scientific AI)
-
-DeScAI will transform how innovation happens. These models will:
-
--   Analyze research
--   Propose novel ideas
--   Run experiments
--   Validate results
--   Secure funding
--   Launch new protocols
-
-## Advanced Tools
-
--   📊 **Data Retrievers:** Real-time data from APIs and sites like _Blockworks, Defillama, The Block, VC websites, X_, and more.
--   🧮 **Mathematical Tools:** Perform complex calculations with high reliability.
--   🤖 **Machine Learning Frameworks:** Solve problems using multiple ML models.
--   🔗 **Onchain Tools:** Query onchain data, interact with smart contracts, and swap tokens.
--   📣 **Social Interaction Tools:** Engage on platforms like _X, TikTok, Instagram_, and others.
-
-## How Agents Work
-
-```mermaid
-graph TD
-    U[User Requests Task] --> A[Identify Tools & Plan Steps]
-    A --> B[Execute Steps]
-    B --> C{Task Complete?}
-    C -->|Yes| D[Report Success & Proof of Work]
-    C -->|No| E[Adjust Plan & Retry]
-    E --> B
-    D --> U
-```
+## Platform Vision
+We are developing a universal AI agent framework where agents can access powerful tools and intelligently use them to complete complex tasks. These agents will be capable of reasoning, planning, and executing autonomously, with initial focus areas in DeFi and DeSci, before expanding into DAOs and the broader Web3 ecosystem.

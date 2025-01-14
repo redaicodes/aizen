@@ -1,66 +1,76 @@
 site_name: Aizen Documentation
-site_description: Web3 AI Agent Platform with powerful tools and realtime data
+site_description: Aizen, Autonomous web3 agents with powerful tools and realtime data
+site_url: https://docs.aizen.ai
 repo_url: https://github.com/redaicodes/aizen
-
-theme:
-    name: material
-    palette:
-        scheme: slate
-        primary: teal
-        accent: teal
-    features:
-        - navigation.instant
-        - navigation.tracking
-        - navigation.sections
-        - navigation.tabs
-        - toc.follow
-        - content.code.copy
-    font:
-        text: Roboto Mono
-        code: Roboto Mono
-    icon:
-        logo: material/robot
-        repo: fontawesome/brands/github
+repo_name: redaicodes/aizen
 
 nav:
-    - Home: index.md
-    - Getting Started: getting-started.md
-    - Platform: platform.md
-    - Examples: examples.md
+    - Introduction: "index.md"
+    - Getting Started:
+          - "Installation & Setup": "getting-started/installation.md"
+          - "Quick Start Guide": "getting-started/quickstart.md"
 
-plugins:
-    - search
+    - Core Concepts:
+          - "Next Gen AI Agents": "concepts/next-gen-agents.md"
+          - "Platform Features": "concepts/features.md"
+
+    - Examples:
+          - "Real World Applications": "examples/applications.md"
+          - "Agent Examples": "examples/agent-examples.md"
+
+    - Development:
+          - "Why Python": "development/python-ecosystem.md"
+          - "Contributing": "development/contributing.md"
+
+theme:
+    name: terminal
+    palette: dark
+    features:
+        - content.code.copy
+        - content.code.select
+        - content.code.annotate
 
 markdown_extensions:
-    - admonition
-    - pymdownx.details
-    - pymdownx.superfences:
-          custom_fences:
-              - name: mermaid
-                class: mermaid
-                format: !!python/name:pymdownx.superfences.fence_code_format
     - pymdownx.highlight:
           anchor_linenums: true
           line_spans: __span
           pygments_lang_class: true
     - pymdownx.inlinehilite
     - pymdownx.snippets
-    - pymdownx.tasklist:
-          custom_checkbox: true
-    - tables
+    - pymdownx.superfences:
+          custom_fences:
+              - name: mermaid
+                class: mermaid
+                format: !!python/name:pymdownx.superfences.fence_code_format
+    - admonition
+    - pymdownx.details
     - attr_list
     - md_in_html
-    - def_list
     - pymdownx.emoji:
           emoji_index: !!python/name:material.extensions.emoji.twemoji
           emoji_generator: !!python/name:material.extensions.emoji.to_svg
+    - tables
+    - def_list
+    - pymdownx.tasklist:
+          custom_checkbox: true
+    - toc:
+          permalink: true
+
+extra_css:
+    - assets/styles.css
+    - assets/highlight.css
+    - assets/dmvendor.css
+
+extra_javascript:
+    - assets/highlight.min.js
+    - assets/highlight_init.js
+
+plugins:
+    - search
+    - minify:
+          minify_html: true
 
 extra:
     social:
         - icon: fontawesome/brands/github
           link: https://github.com/redaicodes/aizen
-        - icon: fontawesome/brands/twitter
-          link: https://twitter.com/redaicodes
-
-extra_css:
-    - stylesheets/extra.css
