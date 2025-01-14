@@ -1,0 +1,87 @@
+<!DOCTYPE html><html lang=en> <head><meta charset=UTF-8><meta name=viewport content="width=device-width, initial-scale=1.0"><meta http-equiv=X-UA-Compatible content="ie=edge"><meta name=generator content="mkdocs-1.6.1, mkdocs-terminal-4.7.0"><meta name=description content="Aizen, Autonomous web3 agents with powerful tools and realtime data"><link href=https://docs.aizen.ai/examples/agent-examples/ rel=canonical><link rel=icon type=image/png sizes=192x192 href=../../img/android-chrome-192x192.png><link rel=icon type=image/png sizes=512x512 href=../../img/android-chrome-512x512.png><link rel=apple-touch-icon sizes=180x180 href=../../img/apple-touch-icon.png><link rel="shortcut icon" type=image/png sizes=48x48 href=../../img/favicon.ico><link rel=icon type=image/png sizes=16x16 href=../../img/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=../../img/favicon-32x32.png><title>Agent Examples - Aizen Documentation</title><link href=../../css/fontawesome/css/fontawesome.min.css rel=stylesheet><link href=../../css/fontawesome/css/solid.min.css rel=stylesheet><link href=../../css/normalize.css rel=stylesheet><link href=../../css/terminal.css rel=stylesheet><link href=../../css/theme.css rel=stylesheet><link href=../../css/theme.tile_grid.css rel=stylesheet><link href=../../css/theme.footer.css rel=stylesheet><!-- dark color palette --><link href=../../css/palettes/dark.css rel=stylesheet><!-- page layout --><style>
+/* initially set page layout to a one column grid */
+.terminal-mkdocs-main-grid {
+    display: grid;
+    grid-column-gap: 1.4em;
+    grid-template-columns: auto;
+    grid-template-rows: auto;
+}
+
+/*  
+*   when side navigation is not hidden, use a two column grid.  
+*   if the screen is too narrow, fall back to the initial one column grid layout.
+*   in this case the main content will be placed under the navigation panel. 
+*/
+@media only screen and (min-width: 70em) {
+    .terminal-mkdocs-main-grid {
+        grid-template-columns: 4fr 9fr;
+    }
+}</style><link href=../../assets/styles.css rel=stylesheet><link href=../../assets/highlight.css rel=stylesheet><link href=../../assets/dmvendor.css rel=stylesheet><!-- search css support --><link href=../../css/search/bootstrap-modal.css rel=stylesheet><!-- search scripts --><script>
+    var base_url = "../..",
+    shortcuts = "{}";
+</script><script src=../../js/jquery/jquery-1.10.1.min.js defer></script><script src=../../js/bootstrap/bootstrap.min.js defer></script><script src=../../js/mkdocs/base.js defer></script><script src=../../assets/highlight.min.js></script><script src=../../assets/highlight_init.js></script><script src=../../search/main.js></script></head> <body class=terminal><div class=container> <div class=terminal-nav> <header class=terminal-logo> <div id=mkdocs-terminal-site-name class="logo terminal-prompt"><a href=https://docs.aizen.ai/ class=no-style>Aizen Documentation</a></div> </header> <nav class=terminal-menu> <ul vocab=https://schema.org/ typeof=BreadcrumbList> <li property=itemListElement typeof=ListItem> <a href=../.. class="menu-item " property=item typeof=WebPage> <span property=name>Introduction</span> </a> <meta property=position content=0> </li> <li property=itemListElement typeof=ListItem> <a href=# class=menu-item data-toggle=modal data-target=#mkdocs_search_modal property=item typeof=SearchAction> <i aria-hidden=true class="fa fa-search"></i> <span property=name>Search</span> </a> <meta property=position content=1> </li> </ul> </nav> </div> </div> <div class=container> <div class=terminal-mkdocs-main-grid><aside id=terminal-mkdocs-side-panel><nav> <ul class=terminal-mkdocs-side-nav-items> <li class=terminal-mkdocs-side-nav-li> <a class="
+
+    terminal-mkdocs-side-nav-item" href=../..>Introduction</a> </li> <li class=terminal-mkdocs-side-nav-li> <span class="
+        
+    
+
+    terminal-mkdocs-side-nav-item terminal-mkdocs-side-nav-section-no-index">Getting Started</span> <ul class=terminal-mkdocs-side-nav-li-ul> <li class=terminal-mkdocs-side-nav-li-ul-li> <a href=../../getting-started/installation/ class="
+
+    terminal-mkdocs-side-nav-item">Installation & Setup</a> </li> <li class=terminal-mkdocs-side-nav-li-ul-li> <a href=../../getting-started/quickstart/ class="
+
+    terminal-mkdocs-side-nav-item">Quick Start Guide</a> </li> </ul> </li> <li class=terminal-mkdocs-side-nav-li> <span class="
+        
+    
+
+    terminal-mkdocs-side-nav-item terminal-mkdocs-side-nav-section-no-index">Core Concepts</span> <ul class=terminal-mkdocs-side-nav-li-ul> <li class=terminal-mkdocs-side-nav-li-ul-li> <a href=../../concepts/next-gen-agents/ class="
+
+    terminal-mkdocs-side-nav-item">Next Gen AI Agents</a> </li> <li class=terminal-mkdocs-side-nav-li-ul-li> <a href=../../concepts/features/ class="
+
+    terminal-mkdocs-side-nav-item">Platform Features</a> </li> </ul> </li> <li class=terminal-mkdocs-side-nav-li> <span class="
+        
+    
+
+    terminal-mkdocs-side-nav-item--active terminal-mkdocs-side-nav-section-no-index">Examples</span> <ul class=terminal-mkdocs-side-nav-li-ul> <li class=terminal-mkdocs-side-nav-li-ul-li> <a href=../applications/ class="
+
+    terminal-mkdocs-side-nav-item">Real World Applications</a> </li> <li class=terminal-mkdocs-side-nav-li-ul-li> <span class="
+
+    terminal-mkdocs-side-nav-item--active">Agent Examples</span> </li> </ul> </li> <li class=terminal-mkdocs-side-nav-li> <span class="
+        
+    
+
+    terminal-mkdocs-side-nav-item terminal-mkdocs-side-nav-section-no-index">Development</span> <ul class=terminal-mkdocs-side-nav-li-ul> <li class=terminal-mkdocs-side-nav-li-ul-li> <a href=../../development/python-ecosystem/ class="
+
+    terminal-mkdocs-side-nav-item">Why Python</a> </li> <li class=terminal-mkdocs-side-nav-li-ul-li> <a href=../../development/contributing/ class="
+
+    terminal-mkdocs-side-nav-item">Contributing</a> </li> </ul> </li> </ul> </nav><hr> <nav> <ul> <li><a href=#agent-examples>Agent Examples</a></li> <li><a href=#sample-agent-output>Sample Agent Output</a></li><li><a href=#how-it-works>How It Works</a></li> </ul> </nav> </aside> <main id=terminal-mkdocs-main-content> <section id=mkdocs-terminal-content> <h1 id=agent-examples>Agent Examples<a class=headerlink href=#agent-examples title="Permanent link">&para;</a></h1> <p>Here's a detailed walkthrough of how our market analysis agent works in practice.</p> <h2 id=sample-agent-output>Sample Agent Output<a class=headerlink href=#sample-agent-output title="Permanent link">&para;</a></h2> <div class="language-text highlight"><pre><span></span><code><span id=__span-0-1><a id=__codelineno-0-1 name=__codelineno-0-1 href=#__codelineno-0-1></a>2025-01-14 08:11:06,390 - AgentRunner - INFO - Sending last message to GPT
+</span><span id=__span-0-2><a id=__codelineno-0-2 name=__codelineno-0-2 href=#__codelineno-0-2></a>2025-01-14 08:11:08,786 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions &quot;HTTP/1.1 200 OK&quot;
+</span><span id=__span-0-3><a id=__codelineno-0-3 name=__codelineno-0-3 href=#__codelineno-0-3></a>
+</span><span id=__span-0-4><a id=__codelineno-0-4 name=__codelineno-0-4 href=#__codelineno-0-4></a>### Latest Crypto News Articles
+</span><span id=__span-0-5><a id=__codelineno-0-5 name=__codelineno-0-5 href=#__codelineno-0-5></a>
+</span><span id=__span-0-6><a id=__codelineno-0-6 name=__codelineno-0-6 href=#__codelineno-0-6></a>1. Semler Scientific expands bitcoin holdings to 2,321 BTC with latest $23 million purchase
+</span><span id=__span-0-7><a id=__codelineno-0-7 name=__codelineno-0-7 href=#__codelineno-0-7></a>2. Sygnum Bank achieves Unicorn status following $58 million funding round
+</span><span id=__span-0-8><a id=__codelineno-0-8 name=__codelineno-0-8 href=#__codelineno-0-8></a>3. Japan&#39;s Remixpoint buys 33.3 additional bitcoin, boosting holdings to nearly $32 million
+</span><span id=__span-0-9><a id=__codelineno-0-9 name=__codelineno-0-9 href=#__codelineno-0-9></a>
+</span><span id=__span-0-10><a id=__codelineno-0-10 name=__codelineno-0-10 href=#__codelineno-0-10></a>### Additional Crypto News
+</span><span id=__span-0-11><a id=__codelineno-0-11 name=__codelineno-0-11 href=#__codelineno-0-11></a>
+</span><span id=__span-0-12><a id=__codelineno-0-12 name=__codelineno-0-12 href=#__codelineno-0-12></a>1. MoonPay acquires Solana startup to grow payments services
+</span><span id=__span-0-13><a id=__codelineno-0-13 name=__codelineno-0-13 href=#__codelineno-0-13></a>2. Bitcoin ETFs: Better year or sophomore slump?
+</span><span id=__span-0-14><a id=__codelineno-0-14 name=__codelineno-0-14 href=#__codelineno-0-14></a>3. Tis the season for campaign promises follow-throughs
+</span><span id=__span-0-15><a id=__codelineno-0-15 name=__codelineno-0-15 href=#__codelineno-0-15></a>4. AI agent sector suffers 44% market cap wipeout
+</span><span id=__span-0-16><a id=__codelineno-0-16 name=__codelineno-0-16 href=#__codelineno-0-16></a>
+</span><span id=__span-0-17><a id=__codelineno-0-17 name=__codelineno-0-17 href=#__codelineno-0-17></a>### Market Summary and Sentiment
+</span><span id=__span-0-18><a id=__codelineno-0-18 name=__codelineno-0-18 href=#__codelineno-0-18></a>Current market conditions show bullish activity in Bitcoin with significant institutional purchases and ETF discussions. The overall sentiment appears **Bullish**.
+</span><span id=__span-0-19><a id=__codelineno-0-19 name=__codelineno-0-19 href=#__codelineno-0-19></a>
+</span><span id=__span-0-20><a id=__codelineno-0-20 name=__codelineno-0-20 href=#__codelineno-0-20></a>### Tweet Thread Posted
+</span><span id=__span-0-21><a id=__codelineno-0-21 name=__codelineno-0-21 href=#__codelineno-0-21></a>🧵 [Thread]: Crypto Market Analysis Today (Jan 14, 2025)
+</span><span id=__span-0-22><a id=__codelineno-0-22 name=__codelineno-0-22 href=#__codelineno-0-22></a>
+</span><span id=__span-0-23><a id=__codelineno-0-23 name=__codelineno-0-23 href=#__codelineno-0-23></a>1/5 🚀 The market is seeing significant bullish momentum, especially for Bitcoin
+</span><span id=__span-0-24><a id=__codelineno-0-24 name=__codelineno-0-24 href=#__codelineno-0-24></a>
+</span><span id=__span-0-25><a id=__codelineno-0-25 name=__codelineno-0-25 href=#__codelineno-0-25></a>2/5 🌐 Semler Scientific expands Bitcoin holdings by purchasing 2,321 BTC ($23M)
+</span><span id=__span-0-26><a id=__codelineno-0-26 name=__codelineno-0-26 href=#__codelineno-0-26></a>
+</span><span id=__span-0-27><a id=__codelineno-0-27 name=__codelineno-0-27 href=#__codelineno-0-27></a>3/5 💼 Sygnum Bank achieves unicorn status through $58M funding round
+</span><span id=__span-0-28><a id=__codelineno-0-28 name=__codelineno-0-28 href=#__codelineno-0-28></a>
+</span><span id=__span-0-29><a id=__codelineno-0-29 name=__codelineno-0-29 href=#__codelineno-0-29></a>4/5 🔍 Overall, sentiment remains optimistic with new tech innovations
+</span><span id=__span-0-30><a id=__codelineno-0-30 name=__codelineno-0-30 href=#__codelineno-0-30></a>
+</span><span id=__span-0-31><a id=__codelineno-0-31 name=__codelineno-0-31 href=#__codelineno-0-31></a>5/5 📈 Overall sentiment: Bullish! Stay tuned for more updates
+</span></code></pre></div> <h2 id=how-it-works>How It Works<a class=headerlink href=#how-it-works title="Permanent link">&para;</a></h2> <ol> <li> <p><strong>Data Collection</strong></p> <ul> <li>Fetches latest news from multiple sources</li> <li>Monitors social media sentiment</li> <li>Tracks market movements</li> </ul> </li> <li> <p><strong>Analysis</strong></p> <ul> <li>Processes news content</li> <li>Evaluates market sentiment</li> <li>Identifies key trends</li> </ul> </li> <li> <p><strong>Action</strong></p> <ul> <li>Generates summary</li> <li>Creates engaging content</li> <li>Posts to social media</li> <li>Monitors engagement</li> </ul> </li> <li> <p><strong>Documentation</strong></p> <ul> <li>Logs all actions</li> <li>Records analysis</li> <li>Maintains audit trail</li> </ul> </li> </ol> </section> </main> </div> <hr><footer> <div class=terminal-mkdocs-footer-grid> <div id=terminal-mkdocs-footer-copyright-info> Site built with <a href=http://www.mkdocs.org>MkDocs</a> and <a href=https://github.com/ntno/mkdocs-terminal>Terminal for MkDocs</a>. </div> </div> </footer> </div> <div class=modal id=mkdocs_search_modal tabindex=-1 role=alertdialog aria-modal=true aria-labelledby=searchModalLabel> <div class="modal-dialog modal-lg" role=search> <div class=modal-content> <div class=modal-header> <h5 class=modal-title id=searchModalLabel>Search</h5> <button type=button class="close btn btn-default btn-ghost" data-dismiss=modal><span aria-hidden=true>x</span><span class=sr-only>Close</span></button> </div> <div class=modal-body> <p id=searchInputLabel>Type to start searching</p> <form> <div class=form-group> <input type=search class=form-control aria-labelledby=searchInputLabel placeholder id=mkdocs-search-query title="Please enter search terms here"> </div> </form> <div id=mkdocs-search-results data-no-results-text="No document matches found"></div> </div> <div class=modal-footer> </div> </div> </div> </div> </body> </html>
