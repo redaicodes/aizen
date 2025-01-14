@@ -269,6 +269,10 @@ class BscClient:
         """
         if not self.account:
             raise ValueError("No wallet imported")
+        
+        # Convert token symbols to lowercase
+        from_token_symbol = from_token_symbol.lower()
+        to_token_symbol = to_token_symbol.lower()
 
         if from_token_symbol != 'bnb':
             approve_hash = self.pancake_v2.approve_swap_token(from_token_symbol, amount)
