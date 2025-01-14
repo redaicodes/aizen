@@ -3,11 +3,19 @@
 
   AI agents with superpowers - talk is good, action is better
   
-  [![PyPI version](https://img.shields.io/pypi/v/aizen?color=blue&style=for-the-badge)](https://pypi.org/project/aizen-agents)
+  [![PyPI version](https://img.shields.io/pypi/v/aizen-agents?color=blue&style=for-the-badge)](https://pypi.org/project/aizen-agents/)
   [![Python version](https://img.shields.io/badge/Python-3.8+-blue.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/downloads/)
   [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
-  [![Documentation](https://img.shields.io/badge/docs-latest-brightgreen.svg?style=for-the-badge)](https://docs.aizen.io)
+  [![Documentation](https://img.shields.io/badge/docs-latest-brightgreen.svg?style=for-the-badge)](https://redaicodes.github.io/aizen)
 </div>
+
+---
+
+**Documentation**: <a href="https://redaicodes.github.io/aizen" target="_blank">https://redaicodes.github.io/aizen</a>
+
+**Source Code**: <a href="https://github.com/redaicodes/aizen" target="_blank">https://github.com/redaicodes/aizen</a>
+
+---
 
   
 ## Table of Contents
