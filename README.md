@@ -149,12 +149,12 @@ Aizen agents are powered by LLMs that follow natural language instructions to pe
   "tools": [
     "theblock__get_latest_news",
     "blockworks__get_latest_news",
-    "bscclient"
+    "twitterclient"
   ],
-  "system_prompt": "You are an experienced crypto market analyst with over 10 years of experience in digital assets. You specialize in market analysis, trend identification, and risk assessment. You are known for your clear, data-driven insights and actionable recommendations. You carefully analyze market news and indicators before making any trading suggestions.",
+  "system_prompt": "You are an experienced crypto market analyst with over 10 years of experience in digital assets. You specialize in market analysis, trend identification, and sentiment analysis. You have a strong following on Twitter where you share clear, data-driven insights. You're known for engaging with your audience through thoughtful market commentary and analysis threads.",
   "tasks": [
     {
-      "prompt": "You are a crypto market analyst.\n1. Get the latest crypto news articles.\n2. Create a concise summary of current market conditions\n3. Determine overall sentiment (Bullish/Neutral/Bearish)\n4. Buy ONE token with reasoning if clear opportunity exists\n5. Sell ONE token with reasoning if clear risk exists.",
+      "prompt": "You are a crypto market analyst.\n1. Get the latest crypto news articles\n2. Search for relevant tweets about major cryptocurrencies\n3. Create a concise summary of market conditions\n4. Determine overall sentiment (Bullish/Neutral/Bearish)\n5. Post a tweet thread summarizing your analysis with key points and sentiment\n6. Monitor and engage with responses to your thread",
       "frequency": 60
     }
   ]
@@ -178,21 +178,54 @@ async def main():
 
 Sample output:
 ```
-2025-01-14 07:48:56,355 - AgentRunner - INFO - GPT Response
-### Current Market Conditions Summary
-The cryptocurrency market is currently experiencing an uptick in institutional investments, as highlighted by recent major purchases by financial institutions. New technological advancements and mergers in the industry are likely to push the market forward. Overall, the atmosphere is one of cautious optimism, driven by institutional validation of key assets like USDT.
+2025-01-14 08:11:06,390 - AgentRunner - INFO - Sending last message to GPT: {
+  "role": "user",
+  "content": "You are a crypto market analyst.\n1. Get the latest crypto news articles\n2. Search for relevant tweets about major cryptocurrencies\n3. Create a concise summary of market conditions\n4. Determine overall sentiment (Bullish/Neutral/Bearish)\n5. Post a tweet thread summarizing your analysis with key points and sentiment\n6. Monitor and engage with responses to your thread"
+}
+2025-01-14 08:11:08,786 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-14 08:11:08,799 - AgentRunner - INFO - GPT Response: No content
+2025-01-14 08:11:08,800 - AgentRunner - INFO - Tool Calls in Response:
+2025-01-14 08:11:08,800 - AgentRunner - INFO -   - Tool: theblock__get_latest_news
+2025-01-14 08:11:08,800 - AgentRunner - INFO -     Args: {"topk": 5}
+2025-01-14 08:11:08,800 - AgentRunner - INFO -   - Tool: blockworks__get_latest_news
+2025-01-14 08:11:08,800 - AgentRunner - INFO -     Args: {"topk": 5}
+2025-01-14 08:11:08,800 - AgentRunner - INFO -   - Tool: twitterclient__search_tweets
+2025-01-14 08:11:08,800 - AgentRunner - INFO -     Args: {"query": "Bitcoin OR Ethereum OR Solana OR Cardano", "tweet_type": "Latest", "limit": 5}
 
-### Overall Sentiment
-**Bullish**: The recent activities, particularly the accumulation of USDT by large institutions and developments in blockchain technology, create a sentiment that suggests positive market dynamics.
+2025-01-14 08:11:54,410 - AgentRunner - INFO - GPT Response: 
+### Latest Crypto News Articles
 
-### Trading Decisions
-#### Buy Opportunity
-I will select USDT (Tether) as a stablecoin option to take advantage of potential short-term gains as institutions are accumulating and the sentiment is strong. Given the market is showing bullish signs and more funds are moving towards USDT, this is a strategic buy.
+1. **[Semler Scientific expands bitcoin holdings to 2,321 BTC with latest $23 million purchase](https://www.theblock.co/post/334403/semler-scientific-expands-bitcoin-holdings-to-2321-btc)** - Jan 14, 2025
+   ![thumbnail](https://www.tbstat.com/cdn-cgi/image/format=avif,q=50/wp/uploads/2023/12/20231204_BitcoinMining_News-1200x675.jpg)
 
-2025-01-14 07:49:04,538 - AgentRunner - INFO - Executing tool: bscclient__swap with args: {'from_token_symbol': 'USDT', 'to_token_symbol': 'ETH', 'amount': 0.001}
-2025-01-14 07:49:05,587 - BscClient - INFO - Approve transaction sent: 754d68414300130783c72...
-2025-01-14 07:49:09,103 - BscClient - INFO - Swap USDT -> ETH TX sent: a9207ea6311c1f16...
-2025-01-14 07:49:11,305 - BscClient - INFO - Transaction mined: 0xa9207ea6311c1f1...
+2. **[Sygnum Bank achieves Unicorn status following $58 million funding round to expand Bitcoin focus](https://www.theblock.co/post/334255/sygnum-bank-unicorn-status-funding-round-bitcoin)** - Jan 14, 2025
+   ![thumbnail](https://www.tbstat.com/cdn-cgi/image/format=avif,q=50/wp/uploads/2024/07/20240729_Funding_News_3-1200x675.jpg)
+
+3. **[Japan’s Remixpoint buys 33.3 additional bitcoin, boosting holdings to nearly $32 million](https://www.theblock.co/post/334405/japans-remixpoint-buys-33-3-additional-bitcoin-boosting-holdings-to-nearly-32-million)** - Jan 14, 2025
+   ![thumbnail](https://www.tbstat.com/cdn-cgi/image/format=avif,q=50/wp/uploads/2019/06/japan-flag-building-1200x675.jpg)
+
+### Additional Crypto News
+
+1. **[MoonPay acquires Solana startup to grow payments services](https://www.blockworks.co/news/moonpay-acquires-solana-payments-startup)** - Jan 13, 2025
+2. **[Bitcoin ETFs: Better year or sophomore slump?](https://www.blockworks.co/news/bitcoin-etf-adoption-outlook)** - Jan 13, 2025
+3. **[Tis the season for campaign promises follow-throughs](https://www.blockworks.co/news/trump-campaign-promises-bitcoin-reserve)** - Jan 13, 2025
+4. **[AI agent sector suffers 44% market cap wipeout](https://www.blockworks.co/news/ai-agent-market-wipeout)** - Jan 13, 2025
+
+### Relevant Tweets about Major Cryptocurrencies
+
+1. **Tweet by @Solig_18**: "the terminal evolves with precision...mastering the layers of complexity."
+2. **Tweet by @RARE TRADING SIGNALS**: "Bitcoin Fear and Greed Index"
+
+### Market Summary and Sentiment
+Current market conditions show bullish activity in Bitcoin with significant institutional purchases and ETF discussions. The overall sentiment appears **Bullish**, supported by positive institutional movement and new technology implementations.
+
+### Posting the Tweet Thread
+Now I will post a tweet thread summarizing my analysis with key points and sentiment.
+2025-01-14 08:11:54,410 - AgentRunner - INFO - Tool Calls in Response:
+2025-01-14 08:11:54,410 - AgentRunner - INFO -   - Tool: twitterclient__post_tweet
+2025-01-14 08:11:54,410 - AgentRunner - INFO -     Args: {"text":"🧵 [Thread]: Crypto Market Analysis Today (Jan 14, 2025)\n\n1/5 🚀 The market is seeing significant bullish momentum, especially for Bitcoin, with institutions increasing their holdings.\n\n2/5 🌐 Semler Scientific expands its Bitcoin holdings by purchasing an additional 2,321 BTC worth $23 million. Strong signal of institutional interest!\n\n3/5 💼 Sygnum Bank achieves unicorn status through a $58 million funding round, emphasizing the growing traction of Bitcoin in finance.\n\n4/5 🔍 Overall, sentiment remains optimistic with new tech innovations, like Sony's Soneium blockchain launch and a notable acquisition by MoonPay.\n\n5/5 📈 The overall sentiment is Bullish! Stay tuned for more updates and analysis."}
+
+2025-01-14 08:11:54,411 - TwitterClient - INFO - Tweet posted successfully with ID: 1879073...
 ```
 
 ### Other Agent Examples
