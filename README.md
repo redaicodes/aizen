@@ -144,73 +144,55 @@ Aizen agents are powered by LLMs that follow natural language instructions to pe
 ### Market Analysis Agent
 
 ```python
-from aizen import Agent, AgentConfig
-from aizen.tools import NewsTools
-
-class NewsCommentaryAgent(Agent):
-    def __init__(self, config: AgentConfig, openai_api_key: str):
-        super().__init__(config)
-        
-        # Initialize news sources
-        self.register_tool_class("theblock", NewsTools.TheBlock)
-        self.register_tool_class("blockworks", NewsTools.Blockworks)
+{
+  "name": "CryptoMarketAnalyst",
+  "tools": [
+    "theblock__get_latest_news",
+    "blockworks__get_latest_news",
+    "bscclient"
+  ],
+  "system_prompt": "You are an experienced crypto market analyst with over 10 years of experience in digital assets. You specialize in market analysis, trend identification, and risk assessment. You are known for your clear, data-driven insights and actionable recommendations. You carefully analyze market news and indicators before making any trading suggestions.",
+  "tasks": [
+    {
+      "prompt": "You are a crypto market analyst.\n1. Get the latest crypto news articles.\n2. Create a concise summary of current market conditions\n3. Determine overall sentiment (Bullish/Neutral/Bearish)\n4. Buy ONE token with reasoning if clear opportunity exists\n5. Sell ONE token with reasoning if clear risk exists.",
+      "frequency": 60
+    }
+  ]
+}
 ```
 
 The agent uses natural language instructions for analysis:
-
-```python
-system_prompt = """You are a crypto market analyst. Based on the provided news articles:
-1. Create a concise summary of current market conditions
-2. Determine overall sentiment (Bullish/Neutral/Bearish)
-3. Recommend ONE token to buy with reasoning if clear opportunity exists
-4. Recommend ONE token to sell with reasoning if clear risk exists"""
-```
 
 Using the agent is straightforward:
 
 ```python
 async def main():
-    # Initialize the agent
-    config = AgentConfig(
-        name="CryptoMarketAnalyst",
-        description="Crypto market analysis and token recommendations",
-        debug_mode=True
-    )
-    agent = NewsCommentaryAgent(config, openai_api_key="your-key")
+    from aizen.agents import AgentRunner
 
-    # Get market analysis
-    result = await agent.get_market_analysis(num_articles=10)
+    # Initialize with above JSON file/variable
+    agent = AgentRunner("config/crpto_market_analyst.json", max_gpt_calls=10)
 
-    # Print the report
-    print("\nMarket Analysis Report")
-    print("=====================")
-    print(f"\nBased on {result['data_points']} articles from {', '.join(result['sources'])}")
-    print(f"\nMarket Summary:")
-    print(result['analysis']['market_summary'])
-    print(f"\nSentiment: {result['analysis']['sentiment']}")
-    
-    # Print recommendations
-    recs = result['analysis']['recommendations']
-    print(f"\nBUY: {recs['buy'] or 'No clear buy recommendation'}")
-    print(f"SELL: {recs['sell'] or 'No clear sell recommendation'}")
+    # Run the agent
+    agent.run()
 ```
 
 Sample output:
 ```
-Market Analysis Report
-=====================
+2025-01-14 07:48:56,355 - AgentRunner - INFO - GPT Response
+### Current Market Conditions Summary
+The cryptocurrency market is currently experiencing an uptick in institutional investments, as highlighted by recent major purchases by financial institutions. New technological advancements and mergers in the industry are likely to push the market forward. Overall, the atmosphere is one of cautious optimism, driven by institutional validation of key assets like USDT.
 
-Based on 20 articles from TheBlock, Blockworks
+### Overall Sentiment
+**Bullish**: The recent activities, particularly the accumulation of USDT by large institutions and developments in blockchain technology, create a sentiment that suggests positive market dynamics.
 
-Market Summary:
-Bitcoin continues to show strength above $50k with institutional inflows reaching new highs. 
-DeFi TVL has grown 20% MoM, led by liquid staking protocols. Layer 2 adoption metrics 
-show sustained growth with Arbitrum leading in daily active users.
+### Trading Decisions
+#### Buy Opportunity
+I will select USDT (Tether) as a stablecoin option to take advantage of potential short-term gains as institutions are accumulating and the sentiment is strong. Given the market is showing bullish signs and more funds are moving towards USDT, this is a strategic buy.
 
-Sentiment: Bullish
-
-BUY: ARB - Arbitrum's ecosystem growth and increasing revenue metrics suggest undervaluation
-SELL: No clear sell recommendation at this time
+2025-01-14 07:49:04,538 - AgentRunner - INFO - Executing tool: bscclient__swap with args: {'from_token_symbol': 'USDT', 'to_token_symbol': 'ETH', 'amount': 0.001}
+2025-01-14 07:49:05,587 - BscClient - INFO - Approve transaction sent: 754d68414300130783c72...
+2025-01-14 07:49:09,103 - BscClient - INFO - Swap USDT -> ETH TX sent: a9207ea6311c1f16...
+2025-01-14 07:49:11,305 - BscClient - INFO - Transaction mined: 0xa9207ea6311c1f1...
 ```
 
 ### Other Agent Examples
